@@ -1,6 +1,5 @@
-package com.raymond.bookingsystem.customer.model;
+package com.raymond.bookingsystem.model;
 
-import com.raymond.bookingsystem.model.Booking;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

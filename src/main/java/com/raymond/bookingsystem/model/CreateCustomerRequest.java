@@ -1,4 +1,4 @@
-package com.raymond.bookingsystem.customer.model;
+package com.raymond.bookingsystem.model;
 
 public record CreateCustomerRequest(String name, String email) {
 

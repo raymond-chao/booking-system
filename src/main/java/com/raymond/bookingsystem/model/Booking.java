@@ -1,7 +1,6 @@
 package com.raymond.bookingsystem.model;
 
 import com.raymond.bookingsystem.repository.BookingStatus;
-import com.raymond.bookingsystem.customer.model.Customer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;

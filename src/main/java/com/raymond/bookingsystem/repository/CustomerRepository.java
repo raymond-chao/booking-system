@@ -1,6 +1,6 @@
-package com.raymond.bookingsystem.customer.repository;
+package com.raymond.bookingsystem.repository;
 
-import com.raymond.bookingsystem.customer.model.Customer;
+import com.raymond.bookingsystem.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {

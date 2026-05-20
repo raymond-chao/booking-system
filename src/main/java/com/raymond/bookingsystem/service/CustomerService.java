@@ -1,9 +1,9 @@
-package com.raymond.bookingsystem.customer.service;
+package com.raymond.bookingsystem.service;
 
 import com.raymond.bookingsystem.repository.BookingRepository;
-import com.raymond.bookingsystem.customer.model.CreateCustomerRequest;
-import com.raymond.bookingsystem.customer.repository.CustomerRepository;
-import com.raymond.bookingsystem.customer.model.Customer;
+import com.raymond.bookingsystem.model.CreateCustomerRequest;
+import com.raymond.bookingsystem.repository.CustomerRepository;
+import com.raymond.bookingsystem.model.Customer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
