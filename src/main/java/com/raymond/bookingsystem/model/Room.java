@@ -7,71 +7,69 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 public class Room {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
 
-    @NotBlank(message = "Room type cannot be empty")
-    private String roomType;
 
-    @Min(value = 1, message = "Room price must be greater than 0")
-    private int roomPrice;
-    private String roomDescription;
-    private List<Booking> bookings;
+    @NotBlank(message = "Rumsnummer måste anges")
+    private String roomNumber;
 
-    public Room(String roomType, int roomPrice, String roomDescription, List<Booking> bookings) {
-        this.roomType = roomType;
-        this.roomPrice = roomPrice;
-        this.roomDescription = roomDescription;
-        this.bookings = bookings;
+    @Min(value = 1, message = "Ett rum måste ha minst en säng")
+    private int beds;
+
+
+    @Min(value = 1, message = "Pris per natt måste vara större än 0")
+    private int pricePerNight;
+
+
+    protected Room() {
     }
 
-    public Room() {
-
+    public Room(String roomNumber, int beds, int pricePerNight) {
+        this.roomNumber = roomNumber;
+        this.beds = beds;
+        this.pricePerNight = pricePerNight;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getRoomType() {
-        return roomType;
+    public @NotBlank(message = "Rumsnummer måste anges") String getRoomNumber() {
+        return roomNumber;
     }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
+    public void setRoomNumber(@NotBlank(message = "Rumsnummer måste anges") String roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
-    public int getRoomPrice() {
-        return roomPrice;
+    @Min(value = 1, message = "Ett rum måste ha minst en säng")
+    public int getBeds() {
+        return beds;
     }
 
-    public void setRoomPrice(int roomPrice) {
-        this.roomPrice = roomPrice;
+    public void setBeds(@Min(value = 1, message = "Ett rum måste ha minst en säng") int beds) {
+        this.beds = beds;
     }
 
-    public String getRoomDescription() {
-        return roomDescription;
+    @Min(value = 1, message = "Pris per natt måste vara större än 0")
+    public int getPricePerNight() {
+        return pricePerNight;
     }
 
-    public void setRoomDescription(String roomDescription) {
-        this.roomDescription = roomDescription;
-    }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
+    public void setPricePerNight(@Min(value = 1, message = "Pris per natt måste vara större än 0") int pricePerNight) {
+        this.pricePerNight = pricePerNight;
     }
 }
