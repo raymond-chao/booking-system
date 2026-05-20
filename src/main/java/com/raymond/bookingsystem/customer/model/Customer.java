@@ -1,22 +1,46 @@
-package com.raymond.bookingsystem.model;
+package com.raymond.bookingsystem.customer.model;
+
+import com.raymond.bookingsystem.model.Booking;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
-public class User {
+@Entity
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+
+    @Email(message = "Invalid email format")
     private String email;
+
+
+    private String phoneNumber;
     private String password;
     private String role;
     private List<Booking> bookings;
 
-    public User(Long id, String name, String email, String password, String role, List<Booking> bookings) {
+    public Customer(Long id, String name, String email, String password, String role, String phoneNumber, List<Booking> bookings) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.phoneNumber = phoneNumber;
         this.bookings = bookings;
+    }
+
+    public Customer() {
+
     }
 
     public Long getId() {

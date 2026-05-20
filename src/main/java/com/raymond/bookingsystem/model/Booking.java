@@ -1,25 +1,54 @@
 package com.raymond.bookingsystem.model;
 
+import com.raymond.bookingsystem.repository.BookingStatus;
+import com.raymond.bookingsystem.customer.model.Customer;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
+@Entity
 public class Booking {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotNull(message = "Check-in date cannot be empty")
+    @FutureOrPresent(message = "Check-in date must be in the future")
     private LocalDate checkInDate;
+
+    @NotNull(message = "Check-out date cannot be empty")
+    @FutureOrPresent(message = "Check-out date must be in the future")
     private LocalDate checkOutDate;
+
+
     private int numOfGuests;
     private String bookingConfirmation;
-    private Room room;
-    private User user;
 
-    public Booking(Long id, LocalDate checkInDate, LocalDate checkOutDate, int numOfGuests, String bookingConfirmation, Room room, User user) {
-        this.id = id;
+    @ManyToOne(optional = false)
+    private Room room;
+
+    @ManyToOne(optional = false)
+    private Customer customer;
+
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
+
+    public Booking(LocalDate checkInDate, LocalDate checkOutDate, int numOfGuests, String bookingConfirmation, Room room, Customer customer, BookingStatus status) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.numOfGuests = numOfGuests;
         this.bookingConfirmation = bookingConfirmation;
         this.room = room;
-        this.user = user;
+        this.customer = customer;
+        this.status = status;
+    }
+
+
+    protected Booking() {
+
     }
 
     public Long getId() {
@@ -70,11 +99,11 @@ public class Booking {
         this.room = room;
     }
 
-    public User getUser() {
-        return user;
+    public Customer setCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

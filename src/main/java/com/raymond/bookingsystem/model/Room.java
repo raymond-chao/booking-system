@@ -1,21 +1,38 @@
 package com.raymond.bookingsystem.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.List;
 
+@Entity
 public class Room {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message = "Room type cannot be empty")
     private String roomType;
+
+    @Min(value = 1, message = "Room price must be greater than 0")
     private int roomPrice;
     private String roomDescription;
     private List<Booking> bookings;
 
-    public Room(Long id, String roomType, int roomPrice, String roomDescription, List<Booking> bookings) {
-        this.id = id;
+    public Room(String roomType, int roomPrice, String roomDescription, List<Booking> bookings) {
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.roomDescription = roomDescription;
         this.bookings = bookings;
+    }
+
+    public Room() {
+
     }
 
     public Long getId() {
