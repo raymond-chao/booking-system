@@ -22,7 +22,6 @@ public class Booking {
     @FutureOrPresent(message = "Check-out date must be in the future")
     private LocalDate checkOutDate;
 
-
     private int numOfGuests;
     private String bookingConfirmation;
 
@@ -105,4 +104,8 @@ public class Booking {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    public BookingStatus getStatus() {return status;}
+
+    public void setStatus(BookingStatus status) {this.status = status;}
 }
