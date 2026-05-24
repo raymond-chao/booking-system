@@ -1,8 +1,11 @@
 package com.raymond.bookingsystem.service;
 
 import com.raymond.bookingsystem.model.Booking;
+import com.raymond.bookingsystem.model.Customer;
 import com.raymond.bookingsystem.repository.BookingRepository;
 import com.raymond.bookingsystem.repository.BookingStatus;
+import com.raymond.bookingsystem.repository.CustomerRepository;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +15,57 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
 
-    public BookingService(BookingRepository bookingRepository) {
+    private final CustomerRepository customerRepository;
+
+//    public BookingService(BookingRepository bookingRepository) {
+//        this.bookingRepository = bookingRepository;
+//    }
+
+//    public Booking createBooking(Booking booking) {
+//
+//        if (booking.getCheckOutDate().isBefore(booking.getCheckInDate())) {
+//            throw new RuntimeException(
+//                    "Slutdatum kan inte vara före startdatum."
+//            );
+//        }
+//
+//        List<Booking> conflicts =
+//                bookingRepository.findConflictingBookings(
+//                        booking.getRoom().getId(),
+//                        booking.getCheckInDate(),
+//                        booking.getCheckOutDate()
+//                );
+//
+//        if (!conflicts.isEmpty()) {
+//            throw new RuntimeException("Rummet är redan bokat dessa datum.");
+//        }
+//
+//        booking.setBookingConfirmation(booking.getRoom().getId() + booking.getCheckInDate().toString());
+//
+//        booking.setStatus(BookingStatus.ACTIVE);
+//
+//        return bookingRepository.save(booking);
+//    }
+
+
+    //Uppdaterad constructor
+    public BookingService(BookingRepository bookingRepository,
+                          CustomerRepository customerRepository) {
         this.bookingRepository = bookingRepository;
+        this.customerRepository = customerRepository;
     }
 
-    public Booking createBooking(Booking booking) {
+    //Uppdaterad booking med customer
+    public Booking createBooking(Booking booking, Long customerId) {
 
         if (booking.getCheckOutDate().isBefore(booking.getCheckInDate())) {
-            throw new RuntimeException(
-                    "Slutdatum kan inte vara före startdatum."
-            );
+            throw new RuntimeException("Slutdatum kan inte vara före startdatum.");
         }
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        booking.setCustomer(customer);
 
         List<Booking> conflicts =
                 bookingRepository.findConflictingBookings(
@@ -35,12 +78,15 @@ public class BookingService {
             throw new RuntimeException("Rummet är redan bokat dessa datum.");
         }
 
-        booking.setBookingConfirmation(booking.getRoom().getId() + booking.getCheckInDate().toString());
+        booking.setBookingConfirmation(
+                booking.getRoom().getId() + booking.getCheckInDate().toString()
+        );
 
         booking.setStatus(BookingStatus.ACTIVE);
 
         return bookingRepository.save(booking);
     }
+
 
     public Booking updateBooking(Long id, Booking updatedBooking) {
 

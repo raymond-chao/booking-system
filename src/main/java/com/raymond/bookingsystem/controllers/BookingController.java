@@ -22,8 +22,9 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking createBooking(@RequestBody Booking booking) {
-        return bookingService.createBooking(booking);
+    public Booking createBooking(@RequestBody Booking booking,
+                                 @RequestParam Long customerId) {
+        return bookingService.createBooking(booking,  customerId);
     }
 
     @PutMapping("/{id}")

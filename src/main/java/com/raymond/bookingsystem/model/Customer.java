@@ -1,12 +1,10 @@
 package com.raymond.bookingsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +24,12 @@ public class Customer {
     private String phoneNumber;
     private String password;
     private String role;
-    private List<Booking> bookings;
+
+//    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();
 
     public Customer(Long id, String name, String email, String password, String role, String phoneNumber, List<Booking> bookings) {
         this.id = id;
@@ -49,6 +52,15 @@ public class Customer {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
 
     public String getName() {
         return name;
