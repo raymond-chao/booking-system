@@ -1,75 +1,101 @@
 package com.raymond.bookingsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
+@Table(name = "rooms")
 public class Room {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(message = "Rumsnummer måste anges")
+    @Column(nullable = false, unique = true, length = 10)
     private String roomNumber;
 
     @Min(value = 1, message = "Ett rum måste ha minst en säng")
+    @Column(nullable = false)
     private int beds;
 
+    @NotNull(message = "Pris måste anges")
+    @DecimalMin(value = "0.01", message = "Pris per natt måste vara större än 0")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal pricePerNight;
 
-    @Min(value = 1, message = "Pris per natt måste vara större än 0")
-    private int pricePerNight;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-
-    protected Room() {
+    public Room() {
     }
 
-    public Room(String roomNumber, int beds, int pricePerNight) {
+    public Room(String roomNumber, int beds, BigDecimal pricePerNight) {
         this.roomNumber = roomNumber;
         this.beds = beds;
         this.pricePerNight = pricePerNight;
     }
 
-    public long getId() {
+    public Room(String roomNumber, int beds, BigDecimal pricePerNight, String description) {
+        this.roomNumber = roomNumber;
+        this.beds = beds;
+        this.pricePerNight = pricePerNight;
+        this.description = description;
+    }
+
+    // Getters och Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public @NotBlank(message = "Rumsnummer måste anges") String getRoomNumber() {
+    public String getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(@NotBlank(message = "Rumsnummer måste anges") String roomNumber) {
+    public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
 
-    @Min(value = 1, message = "Ett rum måste ha minst en säng")
     public int getBeds() {
         return beds;
     }
 
-    public void setBeds(@Min(value = 1, message = "Ett rum måste ha minst en säng") int beds) {
+    public void setBeds(int beds) {
         this.beds = beds;
     }
 
-    @Min(value = 1, message = "Pris per natt måste vara större än 0")
-    public int getPricePerNight() {
+    public BigDecimal getPricePerNight() {
         return pricePerNight;
     }
 
-    public void setPricePerNight(@Min(value = 1, message = "Pris per natt måste vara större än 0") int pricePerNight) {
+    public void setPricePerNight(BigDecimal pricePerNight) {
         this.pricePerNight = pricePerNight;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", roomNumber='" + roomNumber + '\'' +
+                ", beds=" + beds +
+                ", pricePerNight=" + pricePerNight +
+                '}';
     }
 }
