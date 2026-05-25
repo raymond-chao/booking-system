@@ -22,7 +22,6 @@ public class Booking {
     @FutureOrPresent(message = "Check-out date must be in the future")
     private LocalDate checkOutDate;
 
-
     private int numOfGuests;
     private String bookingConfirmation;
 
@@ -30,6 +29,7 @@ public class Booking {
     private Room room;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
@@ -105,4 +105,8 @@ public class Booking {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    public BookingStatus getStatus() {return status;}
+
+    public void setStatus(BookingStatus status) {this.status = status;}
 }
