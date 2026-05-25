@@ -4,10 +4,12 @@ import com.raymond.bookingsystem.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     // Hitta rum som inte har överlappande bokningar
@@ -26,4 +28,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                             @Param("checkOut") LocalDate checkOut);
 
     List<Room> findByBeds(int beds);
+
+    List<Room> findByAvailableTrue();
 }

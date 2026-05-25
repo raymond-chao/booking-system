@@ -3,47 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle} + ' | Pensionat Solbacken'">Pensionat Solbacken</title>
+    <title th:text="${pageTitle} + ' | Pensionat RMJ'">Pensionat RMJ</title>
 
-    <!-- Tailwind CSS CDN (modern & enkel) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome för ikoner -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <style>
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/random/1920x1080/?hotel,sweden');
+            background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+            url('https://source.unsplash.com/random/1920x1080/?hotel,sweden');
             background-size: cover;
             background-position: center;
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-50">
 
-<!-- Navbar -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<!-- Main Content -->
+
 <main>
     <div th:insert="~{::content}"></div>
 </main>
 
-<!-- Footer -->
 <footer class="bg-gray-900 text-white py-12 mt-16">
     <div class="max-w-7xl mx-auto px-6 text-center">
-        <p class="text-gray-400">&copy; 2026 Pensionat Solbacken - Alla rättigheter förbehållna</p>
+        <p class="text-gray-400">&copy; 2026 Pensionat RMJ</p>
     </div>
 </footer>
 
-<script>
-    // Tailwind script
-    tailwind.config = {
-        content: [],
-        theme: {
-            extend: {}
-        }
-    }
-</script>
 </body>
 </html>

@@ -5,11 +5,18 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "rooms")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Room {
 
     @Id
@@ -32,70 +39,17 @@ public class Room {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    public Room() {
-    }
+    @Column(nullable = false)
+    private boolean available = true;
 
-    public Room(String roomNumber, int beds, BigDecimal pricePerNight) {
-        this.roomNumber = roomNumber;
-        this.beds = beds;
-        this.pricePerNight = pricePerNight;
-    }
-
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Booking> bookings = new ArrayList<>();
+    
     public Room(String roomNumber, int beds, BigDecimal pricePerNight, String description) {
         this.roomNumber = roomNumber;
         this.beds = beds;
         this.pricePerNight = pricePerNight;
         this.description = description;
-    }
-
-    // Getters och Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRoomNumber() {
-        return roomNumber;
-    }
-
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
-    }
-
-    public int getBeds() {
-        return beds;
-    }
-
-    public void setBeds(int beds) {
-        this.beds = beds;
-    }
-
-    public BigDecimal getPricePerNight() {
-        return pricePerNight;
-    }
-
-    public void setPricePerNight(BigDecimal pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "Room{" +
-                "id=" + id +
-                ", roomNumber='" + roomNumber + '\'' +
-                ", beds=" + beds +
-                ", pricePerNight=" + pricePerNight +
-                '}';
+        this.available = true;
     }
 }

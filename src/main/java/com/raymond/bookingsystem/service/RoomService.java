@@ -1,6 +1,5 @@
 package com.raymond.bookingsystem.service;
 
-import com.raymond.bookingsystem.error.NotFoundException;
 import com.raymond.bookingsystem.model.Room;
 import com.raymond.bookingsystem.repository.RoomRepository;
 import org.springframework.stereotype.Service;
@@ -21,9 +20,13 @@ public class RoomService {
         return repository.findAll();
     }
 
+    public List<Room> getAvailableRooms() {
+        return repository.findByAvailableTrue();
+    }
+
     public Room getRoomById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Rummet hittades inte"));
+                .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
     }
 
     public List<Room> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
