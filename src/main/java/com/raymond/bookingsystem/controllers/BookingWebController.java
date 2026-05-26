@@ -71,9 +71,15 @@ public class BookingWebController {
     ) {
         Room room = roomService.getRoomById(roomId);
 
-        Customer customer = customerService.createCustomer(
-                new CreateCustomerRequest(name, email, phoneNumber, password)
-        );
+        //Det skapar ny kund vid varje bookning
+//        Customer customer = customerService.createCustomer(
+//                new CreateCustomerRequest(name, email, phoneNumber, password)
+//        );
+
+        Customer customer = customerService.findByEmail(email)
+                .orElseGet(() -> customerService.createCustomer(
+                        new CreateCustomerRequest(name, email, phoneNumber, password)
+                ));
 
         Booking booking = new Booking();
         booking.setRoom(room);

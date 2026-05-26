@@ -15,8 +15,8 @@ public class BookingSystemApplication {
     }
 
     @Bean
-    @Order(2)
-    CommandLineRunner runner(RoomRepository roomRepository) {
+   @Order(2)
+   CommandLineRunner runner(RoomRepository roomRepository) {
         return args -> {
             System.out.println("Antal rum i DB: " + roomRepository.count());
         };

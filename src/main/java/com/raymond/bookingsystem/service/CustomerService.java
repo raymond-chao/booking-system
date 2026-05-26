@@ -1,5 +1,6 @@
 package com.raymond.bookingsystem.service;
 
+import com.raymond.bookingsystem.model.Booking;
 import com.raymond.bookingsystem.model.CreateCustomerRequest;
 import com.raymond.bookingsystem.repository.*;
 import com.raymond.bookingsystem.model.Customer;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.raymond.bookingsystem.error.*;
 
@@ -58,11 +60,13 @@ public class CustomerService {
 
     //DELETE
     public void deleteCustomer(Long id) {
+
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Customer not found: " + id));
 
-        boolean hasActiveBookings = customer.getBookings()
-                .stream()
+        List<Booking> bookings = bookingRepository.findAllByCustomerId(id);
+
+        boolean hasActiveBookings = bookings.stream()
                 .anyMatch(b -> b.getStatus() == BookingStatus.ACTIVE);
 
         if (hasActiveBookings) {
@@ -72,6 +76,29 @@ public class CustomerService {
         }
 
         customerRepository.delete(customer);
+    }
+
+
+    public Customer save(Customer customer) {
+        if (customerRepository.existsByEmail(customer.getEmail())) {
+            throw new BadRequestException("Email already exists");
+        }
+        return customerRepository.save(customer);
+    }
+
+    public boolean emailExists(String email) {
+        return customerRepository.existsByEmail(email);
+    }
+
+
+    public Optional<Customer> findByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
+
+    public Customer findById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
     public Customer createCustomer(CreateCustomerRequest request) {
