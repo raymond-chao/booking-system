@@ -11,36 +11,96 @@
     <div class="max-w-7xl mx-auto px-6 py-12">
         <h1 class="text-4xl font-bold text-center mb-10" th:text="${pageTitle}"></h1>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div th:each="room : ${rooms}"
-                 class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition">
+        <form th:action="@{/available-rooms}" method="get"
+              class="bg-white rounded-2xl shadow-lg p-6 mb-10 grid md:grid-cols-3 gap-6 items-end">
 
-                <div class="h-48 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
-                    <i class="fas fa-bed text-7xl text-emerald-600"></i>
-                </div>
+            <div>
+                <label for="checkIn" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Incheckningsdatum
+                </label>
+                <input id="checkIn"
+                       name="checkIn"
+                       type="date"
+                       required
+                       th:value="${checkIn}"
+                       class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
 
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-2xl font-semibold" th:text="'Rum ' + ${room.roomNumber}"></h3>
-                        <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
-                                Ledigt
-                            </span>
+            <div>
+                <label for="checkOut" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Utcheckningsdatum
+                </label>
+                <input id="checkOut"
+                       name="checkOut"
+                       type="date"
+                       required
+                       th:value="${checkOut}"
+                       class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <button type="submit"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition">
+                Sök lediga rum
+            </button>
+        </form>
+
+        <div th:unless="${searchPerformed}"
+             class="bg-white rounded-2xl shadow p-8 text-center text-gray-600">
+            <i class="fas fa-calendar-days text-5xl text-emerald-600 mb-4"></i>
+            <h2 class="text-2xl font-semibold mb-2">Välj datum för att se lediga rum</h2>
+            <p>Ange incheckningsdatum och utcheckningsdatum ovan och klicka på sök.</p>
+        </div>
+
+        <div th:if="${searchPerformed}">
+
+            <div class="text-center mb-8">
+                <p class="text-gray-600">
+                    Visar rum som är lediga från
+                    <span class="font-semibold" th:text="${checkIn}"></span>
+                    till
+                    <span class="font-semibold" th:text="${checkOut}"></span>
+                </p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(rooms)}"
+                 class="bg-red-100 border border-red-300 text-red-700 rounded-xl p-6 text-center">
+                Inga rum är lediga under de valda datumen.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(rooms)}"
+                 class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div th:each="room : ${rooms}"
+                     class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition">
+
+                    <div class="h-48 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+                        <i class="fas fa-bed text-7xl text-emerald-600"></i>
                     </div>
 
-                    <p class="text-gray-600 text-sm mb-4" th:text="${room.description}"></p>
-
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <span class="text-3xl font-bold text-emerald-600" th:text="${room.pricePerNight}"></span>
-                            <span class="text-gray-500"> kr/natt</span>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-2xl font-semibold" th:text="'Rum ' + ${room.roomNumber}"></h3>
+                            <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
+                                Ledigt
+                            </span>
                         </div>
-                        <a href="#"
-                           class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl text-sm font-medium transition">
-                            Boka detta rum
-                        </a>
+
+                        <p class="text-gray-600 text-sm mb-4" th:text="${room.description}"></p>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <span class="text-3xl font-bold text-emerald-600" th:text="${room.pricePerNight}"></span>
+                                <span class="text-gray-500"> kr/natt</span>
+                            </div>
+
+                            <a th:href="@{/book-room(roomId=${room.id}, checkIn=${checkIn}, checkOut=${checkOut})}"
+                               class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl text-sm font-medium transition">
+                                Boka detta rum
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 

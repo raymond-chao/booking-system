@@ -35,18 +35,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    public Booking(LocalDate checkInDate, LocalDate checkOutDate, int numOfGuests, String bookingConfirmation, Room room, Customer customer, BookingStatus status) {
-        this.checkInDate = checkInDate;
-        this.checkOutDate = checkOutDate;
-        this.numOfGuests = numOfGuests;
-        this.bookingConfirmation = bookingConfirmation;
-        this.room = room;
-        this.customer = customer;
-        this.status = status;
-    }
-
-
-    protected Booking() {
+    public Booking() {
 
     }
 

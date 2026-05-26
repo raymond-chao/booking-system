@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sv" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{base :: head}">
+    <title th:text="${pageTitle}"></title>
+</head>
+
+<body>
+<div th:fragment="content">
+
+    <div class="max-w-3xl mx-auto px-6 py-12">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+
+            <div class="mb-8 text-center">
+                <i class="fas fa-calendar-check text-6xl text-amber-600 mb-4"></i>
+                <h1 class="text-4xl font-bold mb-2" th:text="${pageTitle}"></h1>
+                <p class="text-gray-600">
+                    Fyll i dina uppgifter för att boka rummet.
+                </p>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+                <h2 class="text-2xl font-semibold mb-3" th:text="'Rum ' + ${room.roomNumber}"></h2>
+
+                <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-700">
+                    <div>
+                        <span class="font-semibold block">Antal sängar</span>
+                        <span th:text="${room.beds}"></span>
+                    </div>
+
+                    <div>
+                        <span class="font-semibold block">Pris per natt</span>
+                        <span th:text="${room.pricePerNight} + ' kr'"></span>
+                    </div>
+
+                    <div>
+                        <span class="font-semibold block">Status</span>
+                        <span th:text="${room.available} ? 'Ledigt' : 'Upptaget'"></span>
+                    </div>
+                </div>
+
+                <p class="text-gray-600 mt-4" th:text="${room.description}"></p>
+            </div>
+
+            <form th:action="@{/book-room}" method="post" class="space-y-6">
+                <input type="hidden" name="roomId" th:value="${room.id}">
+
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Namn
+                    </label>
+                    <input id="name"
+                           name="name"
+                           type="text"
+                           required
+                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                           placeholder="Ditt fullständiga namn">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                        E-post
+                    </label>
+                    <input id="email"
+                           name="email"
+                           type="email"
+                           required
+                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                           placeholder="namn@example.com">
+                </div>
+
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Telefonnummer
+                    </label>
+                    <input id="phoneNumber"
+                           name="phoneNumber"
+                           type="tel"
+                           required
+                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                           placeholder="0701234567">
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="checkInDate" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Incheckningsdatum
+                        </label>
+                        <input id="checkInDate"
+                               name="checkInDate"
+                               type="date"
+                               required
+                               th:value="${checkIn}"
+                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div>
+                        <label for="checkOutDate" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Utcheckningsdatum
+                        </label>
+                        <input id="checkOutDate"
+                               name="checkOutDate"
+                               type="date"
+                               required
+                               th:value="${checkOut}"
+                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="numOfGuests" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Antal gäster
+                    </label>
+                    <input id="numOfGuests"
+                           name="numOfGuests"
+                           type="number"
+                           min="1"
+                           th:max="${room.beds}"
+                           required
+                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                           placeholder="Antal gäster">
+                    <p class="text-sm text-gray-500 mt-2" th:text="'Max antal gäster för detta rum: ' + ${room.beds}"></p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 pt-4">
+                    <button type="submit"
+                            class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-xl font-semibold transition">
+                        Slutför bokning
+                    </button>
+
+                    <a href="/rooms"
+                       class="border border-gray-300 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-semibold transition text-center">
+                        Tillbaka till rum
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

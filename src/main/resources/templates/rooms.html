@@ -35,10 +35,11 @@
                             <span class="text-gray-500"> kr/natt</span>
                         </div>
 
-                        //TODO
-                        <a href="#" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl text-sm font-medium transition">
-                            Boka detta rum
-                        </a>
+                            <a th:href="@{/book-room(roomId=${room.id})}"
+                               class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl text-sm font-medium transition">
+                                Boka detta rum
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

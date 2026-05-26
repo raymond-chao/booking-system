@@ -13,8 +13,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     SELECT b FROM Booking b
     WHERE b.room.id = :roomId
     AND b.status = 'ACTIVE'
-    AND b.checkInDate <= :checkOutDate
-    AND b.checkOutDate >= :checkInDate
+    AND b.checkInDate < :checkOutDate
+    AND b.checkOutDate > :checkInDate
     """)
     List<Booking> findConflictingBookings(
             Long roomId,
