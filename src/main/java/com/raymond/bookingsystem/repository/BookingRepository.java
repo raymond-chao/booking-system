@@ -3,6 +3,8 @@ package com.raymond.bookingsystem.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 import com.raymond.bookingsystem.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +26,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByCustomerId(Long customerId);
 
+    boolean existsByBookingConfirmation(String bookingConfirmation);
 
+    Optional<Booking> findByBookingConfirmationAndCustomerNameIgnoreCase(
+            String bookingConfirmation,
+            String customerName
+    );
 }
