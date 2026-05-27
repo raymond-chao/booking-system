@@ -10,12 +10,10 @@ import com.raymond.bookingsystem.service.RoomService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Controller
 public class BookingWebController {
@@ -23,6 +21,8 @@ public class BookingWebController {
     private final BookingService bookingService;
     private final CustomerService customerService;
     private final RoomService roomService;
+
+
 
     public BookingWebController(
             BookingService bookingService,
@@ -56,6 +56,41 @@ public class BookingWebController {
         model.addAttribute("pageTitle", "Boka rum " + room.getRoomNumber());
 
         return "booking-form";
+    }
+
+    @GetMapping("/book-room/check-availability")
+    @ResponseBody
+    public Map<String, Object> checkRoomAvailability(
+            @RequestParam Long roomId,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate checkIn,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate checkOut
+    ) {
+        if (!checkOut.isAfter(checkIn)) {
+            return Map.of(
+                    "available", false,
+                    "message", "Utcheckningsdatum måste vara efter incheckningsdatum."
+            );
+        }
+
+        boolean available = roomService.isRoomAvailable(roomId, checkIn, checkOut);
+
+        if (available) {
+            return Map.of(
+                    "available", true,
+                    "message", "Rummet är ledigt valda datum."
+            );
+        }
+
+        return Map.of(
+                "available", false,
+                "message", "Rummet är redan bokat dessa datum. Välj andra datum."
+        );
     }
 
     @PostMapping("/book-room")

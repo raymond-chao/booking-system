@@ -27,6 +27,7 @@ public class SecurityConfig {
                                 "/customers/new",
                                 "/available-rooms",
                                 "/rooms",
+                                "/book-room/check-availability",
                                 "/css/**",
                                 "/js/**"
                         ).permitAll()
@@ -42,10 +43,11 @@ public class SecurityConfig {
 
                 // LOGIN SETUP
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/customers/new")
+                        .loginProcessingUrl("/login")
                         .usernameParameter("username")  // email
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/available-rooms", true)
+                        .defaultSuccessUrl("/rooms", true)
                         .permitAll()
                 )
 
