@@ -4,11 +4,15 @@ package com.raymond.bookingsystem.controllers;
 import com.raymond.bookingsystem.error.BadRequestException;
 import com.raymond.bookingsystem.model.CreateCustomerRequest;
 import com.raymond.bookingsystem.model.Customer;
+
 import org.springframework.ui.Model;
 import com.raymond.bookingsystem.service.CustomerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/customers")
@@ -16,8 +20,10 @@ public class CustomerWebController {
 
     private final CustomerService customerService;
 
-    public CustomerWebController(CustomerService customerService) {
+    public CustomerWebController(CustomerService customerService){
+
         this.customerService = customerService;
+
     }
 
     @GetMapping
@@ -36,26 +42,38 @@ public class CustomerWebController {
 
     @PostMapping("/save")
     public String saveCustomer(@ModelAttribute Customer customer,
+                               HttpServletRequest request,
                                RedirectAttributes redirectAttributes) {
 
         if (customer.getId() != null) {
             customerService.updateCustomer(customer.getId(), customer);
-        } else {
-            CreateCustomerRequest request = new CreateCustomerRequest(
-                    customer.getName(),
-                    customer.getEmail(),
-                    customer.getPhoneNumber(),
-                    customer.getPassword()
-            );
-
-            customerService.createCustomer(request);
-            redirectAttributes.addFlashAttribute("Success", "Välkommen! Dit konto är skapad");
+            return "redirect:/customers";
         }
 
-        return "redirect:/rooms";
+        // 1. skapa konto
+        CreateCustomerRequest req = new CreateCustomerRequest(
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhoneNumber(),
+                customer.getPassword()
+        );
+
+        customerService.createCustomer(req);
+
+        // 2. auto-login
+        try {
+            request.login(customer.getEmail(), customer.getPassword());
+        } catch (Exception e) {
+            throw new RuntimeException("Auto-login failed", e);
+        }
+
+        redirectAttributes.addFlashAttribute(
+                "success",
+                "Välkommen! Ditt konto är skapat."
+        );
+
+        return "redirect:/account";
     }
-
-
 
     @PostMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
