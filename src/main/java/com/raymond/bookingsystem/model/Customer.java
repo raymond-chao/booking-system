@@ -18,6 +18,7 @@ public class Customer {
     private String name;
 
     @Email(message = "Invalid email format")
+    @Column(unique = true)
     private String email;
 
 
