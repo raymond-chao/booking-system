@@ -52,10 +52,6 @@ public class Room {
         this.description = description;
     }
 
-    public Room() {
-
-    }
-
     public Long getId() {
         return id;
     }
