@@ -1,13 +1,14 @@
 package com.raymond.bookingsystem.controllers;
 
 import com.raymond.bookingsystem.model.Booking;
-import com.raymond.bookingsystem.model.CreateCustomerRequest;
+
 import com.raymond.bookingsystem.model.Customer;
 import com.raymond.bookingsystem.model.Room;
 import com.raymond.bookingsystem.service.BookingService;
 import com.raymond.bookingsystem.service.CustomerService;
 import com.raymond.bookingsystem.service.RoomService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -96,27 +97,22 @@ public class BookingWebController {
     @PostMapping("/book-room")
     public String submitBooking(
             @RequestParam Long roomId,
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam String phoneNumber,
-            @RequestParam(required = false) String password,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam int numOfGuests,
-            Model model
+            Model model,
+            Authentication authentication
     ) {
         Room room = roomService.getRoomById(roomId);
 
+        String email = authentication.getName();
+
         Customer customer = customerService.findByEmail(email)
-                .orElseGet(() -> customerService.createCustomer(
-                        new CreateCustomerRequest(name, email, phoneNumber, password)
-                ));
+                .orElseThrow(() -> new RuntimeException("Kund inte hittad"));
 
         Booking booking = new Booking();
         booking.setRoom(room);
         booking.setCheckInDate(checkInDate);
         booking.setCheckOutDate(checkOutDate);
-        booking.setNumOfGuests(numOfGuests);
 
         Booking savedBooking = bookingService.createBooking(booking, customer.getId());
 

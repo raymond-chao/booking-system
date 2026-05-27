@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="sv" xmlns:th="http://www.thymeleaf.org">
+<html lang="sv" xmlns:th="http://www.thymeleaf.org" th:replace="~{base}">
 
-<head th:replace="~{base :: head}">
+<head th:fragment="head">
     <title th:text="${pageTitle}"></title>
 </head>
 
@@ -43,15 +43,6 @@
                         <span th:text="${booking.checkOutDate}"></span>
                     </p>
 
-                    <p>
-                        <span class="font-semibold">Antal gäster:</span>
-                        <span th:text="${booking.numOfGuests}"></span>
-                    </p>
-
-                    <p>
-                        <span class="font-semibold">Status:</span>
-                        <span th:text="${booking.status}"></span>
-                    </p>
                 </div>
             </div>
 

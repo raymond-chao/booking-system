@@ -72,7 +72,7 @@ public class CustomerWebController {
                 "Välkommen! Ditt konto är skapat."
         );
 
-        return "redirect:/account";
+        return "redirect:/rooms";
     }
 
     @PostMapping("/delete/{id}")

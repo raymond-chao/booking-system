@@ -2,11 +2,14 @@ package com.raymond.bookingsystem.controllers;
 import com.raymond.bookingsystem.model.Customer;
 import com.raymond.bookingsystem.service.CustomerService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class AccountController {
@@ -81,7 +84,9 @@ public class AccountController {
 
     @PostMapping("/account/delete")
     public String deleteAccount(Authentication authentication,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
 
         String email = authentication.getName();
 
@@ -99,7 +104,14 @@ public class AccountController {
 
         customerService.deleteCustomer(customer.getId());
 
-        return "redirect:/login";
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Ditt konto har raderats. Du är nu utloggad."
+        );
+
+        return "index";
     }
 
 }
