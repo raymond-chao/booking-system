@@ -43,43 +43,7 @@
             </div>
 
             <form th:action="@{/book-room}" method="post" class="space-y-6">
-                <input type="hidden" name="roomId" th:value="${room.id}">
-
-                <div>
-                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Namn
-                    </label>
-                    <input id="name"
-                           name="name"
-                           type="text"
-                           required
-                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                           placeholder="Ditt fullständiga namn">
-                </div>
-
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                        E-post
-                    </label>
-                    <input id="email"
-                           name="email"
-                           type="email"
-                           required
-                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                           placeholder="namn@example.com">
-                </div>
-
-                <div>
-                    <label for="phoneNumber" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Telefonnummer
-                    </label>
-                    <input id="phoneNumber"
-                           name="phoneNumber"
-                           type="tel"
-                           required
-                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                           placeholder="0701234567">
-                </div>
+                <input type="hidden" id="roomId" name="roomId" th:value="${room.id}">
 
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
@@ -91,7 +55,7 @@
                                type="date"
                                required
                                th:value="${checkIn}"
-                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
 
                     <div>
@@ -103,41 +67,79 @@
                                type="date"
                                required
                                th:value="${checkOut}"
-                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
 
-                <div>
-                    <label for="numOfGuests" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Antal gäster
-                    </label>
-                    <input id="numOfGuests"
-                           name="numOfGuests"
-                           type="number"
-                           min="1"
-                           th:max="${room.beds}"
-                           required
-                           class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                           placeholder="Antal gäster">
-                    <p class="text-sm text-gray-500 mt-2" th:text="'Max antal gäster för detta rum: ' + ${room.beds}"></p>
-                </div>
+                <p id="availabilityMessage" class="hidden rounded-xl p-4"></p>
 
-                <div class="flex flex-col md:flex-row gap-4 pt-4">
-                    <button type="submit"
-                            class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-xl font-semibold transition">
-                        Slutför bokning
-                    </button>
+                <button id="submitBookingButton"
+                        type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition">
+                    Boka rum
+                </button>
 
-                    <a href="/rooms"
-                       class="border border-gray-300 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-semibold transition text-center">
-                        Tillbaka till rum
-                    </a>
-                </div>
+                <a href="/rooms"
+                   class="border border-gray-300 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-semibold transition text-center">
+                    Tillbaka till rum
+                </a>
             </form>
 
         </div>
     </div>
 
 </div>
+
+<script>
+    const roomIdInput = document.getElementById('roomId');
+    const checkInInput = document.getElementById('checkInDate');
+    const checkOutInput = document.getElementById('checkOutDate');
+    const availabilityMessage = document.getElementById('availabilityMessage');
+    const submitButton = document.getElementById('submitBookingButton');
+
+    async function checkAvailability() {
+        const roomId = roomIdInput.value;
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+
+        availabilityMessage.classList.add('hidden');
+        availabilityMessage.textContent = '';
+
+        if (!roomId || !checkIn || !checkOut) {
+            submitButton.disabled = false;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/book-room/check-availability?roomId=${roomId}&checkIn=${checkIn}&checkOut=${checkOut}`);
+            const result = await response.json();
+
+            availabilityMessage.classList.remove('hidden');
+
+            if (result.available) {
+                availabilityMessage.className = 'bg-green-100 border border-green-300 text-green-700 rounded-xl p-4';
+                availabilityMessage.textContent = result.message;
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                availabilityMessage.className = 'bg-red-100 border border-red-300 text-red-700 rounded-xl p-4';
+                availabilityMessage.textContent = result.message;
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        } catch (error) {
+            availabilityMessage.classList.remove('hidden');
+            availabilityMessage.className = 'bg-red-100 border border-red-300 text-red-700 rounded-xl p-4';
+            availabilityMessage.textContent = 'Kunde inte kontrollera tillgänglighet just nu.';
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    checkInInput.addEventListener('change', checkAvailability);
+    checkOutInput.addEventListener('change', checkAvailability);
+
+    checkAvailability();
+</script>
 </body>
 </html>
