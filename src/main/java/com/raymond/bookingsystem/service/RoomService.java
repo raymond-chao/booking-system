@@ -20,9 +20,6 @@ public class RoomService {
         return repository.findAll();
     }
 
-    public List<Room> getAvailableRooms() {
-        return repository.findByAvailableTrue();
-    }
 
     public Room getRoomById(Long id) {
         return repository.findById(id)
@@ -44,9 +41,5 @@ public class RoomService {
 
     public boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut) {
         return repository.isRoomAvailable(roomId, checkIn, checkOut);
-    }
-
-    public List<Room> getRoomsByBeds(int beds) {
-        return repository.findByBeds(beds);
     }
 }

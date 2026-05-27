@@ -50,7 +50,10 @@ public class Room {
         this.beds = beds;
         this.pricePerNight = pricePerNight;
         this.description = description;
-        this.available = true;
+    }
+
+    public Room() {
+
     }
 
     public Long getId() {
@@ -65,32 +68,16 @@ public class Room {
         return roomNumber;
     }
 
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
-    }
-
     public int getBeds() {
         return beds;
-    }
-
-    public void setBeds(int beds) {
-        this.beds = beds;
     }
 
     public BigDecimal getPricePerNight() {
         return pricePerNight;
     }
 
-    public void setPricePerNight(BigDecimal pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public boolean isAvailable() {

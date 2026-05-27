@@ -4,11 +4,9 @@ import com.raymond.bookingsystem.model.Booking;
 import com.raymond.bookingsystem.model.CreateCustomerRequest;
 import com.raymond.bookingsystem.repository.*;
 import com.raymond.bookingsystem.model.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -106,16 +104,10 @@ public CustomerService(CustomerRepository customerRepository,
 //        return customerRepository.save(customer);
 //    }
 
-    public boolean emailExists(String email) {
-        return customerRepository.existsByEmail(email);
-    }
-
 
     public Optional<Customer> findByEmail(String email) {
         return customerRepository.findByEmail(email);
     }
-
-
 
 
     public Customer findById(Long id) {
@@ -129,7 +121,6 @@ public CustomerService(CustomerRepository customerRepository,
         customer.setEmail(request.email());
         customer.setPhoneNumber(request.phoneNumber());
         customer.setPassword(passwordEncoder.encode(request.password()));
-        customer.setRole("Customer");
 
         return customerRepository.save(customer);
     }

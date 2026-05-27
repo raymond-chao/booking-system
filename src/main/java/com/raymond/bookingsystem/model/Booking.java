@@ -29,7 +29,6 @@ public class Booking {
     private Room room;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @Enumerated(EnumType.STRING)

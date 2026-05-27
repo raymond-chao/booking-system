@@ -24,7 +24,6 @@ public class Customer {
 
     private String phoneNumber;
     private String password;
-    private String role;
 
 //    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<Booking> bookings;
@@ -32,12 +31,11 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 
-    public Customer(Long id, String name, String email, String password, String role, String phoneNumber, List<Booking> bookings) {
+    public Customer(Long id, String name, String email, String password, String phoneNumber, List<Booking> bookings) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role;
         this.phoneNumber = phoneNumber;
         this.bookings = bookings;
     }
@@ -85,14 +83,6 @@ public class Customer {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public List<Booking> getBookings() {
