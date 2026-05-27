@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -71,11 +72,6 @@ public class BookingWebController {
     ) {
         Room room = roomService.getRoomById(roomId);
 
-        //Det skapar ny kund vid varje bookning
-//        Customer customer = customerService.createCustomer(
-//                new CreateCustomerRequest(name, email, phoneNumber, password)
-//        );
-
         Customer customer = customerService.findByEmail(email)
                 .orElseGet(() -> customerService.createCustomer(
                         new CreateCustomerRequest(name, email, phoneNumber, password)
@@ -94,5 +90,96 @@ public class BookingWebController {
         model.addAttribute("pageTitle", "Bokning bekräftad");
 
         return "booking-confirmation";
+    }
+
+    @GetMapping("/bookings")
+    public String showFindBookingPage(Model model) {
+        model.addAttribute("pageTitle", "Hitta din bokning");
+        return "booking-search";
+    }
+
+    @PostMapping("/bookings/search")
+    public String findBooking(
+            @RequestParam String name,
+            @RequestParam String bookingConfirmation,
+            Model model
+    ) {
+        try {
+            Booking booking = bookingService.findBookingForCustomer(name, bookingConfirmation);
+
+            model.addAttribute("booking", booking);
+            model.addAttribute("pageTitle", "Din bokning");
+
+            return "booking-details";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("pageTitle", "Hitta din bokning");
+
+            return "booking-search";
+        }
+    }
+
+    @GetMapping("/bookings/edit/{id}")
+    public String showEditBookingForm(
+            @PathVariable Long id,
+            Model model
+    ) {
+        Booking booking = bookingService.getBookingById(id);
+
+        model.addAttribute("booking", booking);
+        model.addAttribute("rooms", roomService.getAllRooms());
+        model.addAttribute("pageTitle", "Ändra bokning");
+
+        return "booking-edit";
+    }
+
+    @PostMapping("/bookings/update/{id}")
+    public String updateBooking(
+            @PathVariable Long id,
+            @RequestParam Long roomId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam int numOfGuests,
+            Model model
+    ) {
+        try {
+            Room room = roomService.getRoomById(roomId);
+
+            Booking updatedBooking = new Booking();
+            updatedBooking.setRoom(room);
+            updatedBooking.setCheckInDate(checkInDate);
+            updatedBooking.setCheckOutDate(checkOutDate);
+            updatedBooking.setNumOfGuests(numOfGuests);
+
+            Booking savedBooking = bookingService.updateBooking(id, updatedBooking);
+
+            model.addAttribute("booking", savedBooking);
+            model.addAttribute("success", "Bokningen har uppdaterats.");
+            model.addAttribute("pageTitle", "Din bokning");
+
+            return "booking-details";
+        } catch (RuntimeException e) {
+            Booking booking = bookingService.getBookingById(id);
+
+            model.addAttribute("booking", booking);
+            model.addAttribute("rooms", roomService.getAllRooms());
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("pageTitle", "Ändra bokning");
+
+            return "booking-edit";
+        }
+    }
+
+    @PostMapping("/bookings/cancel/{id}")
+    public String cancelBooking(
+            @PathVariable Long id,
+            Model model
+    ) {
+        bookingService.cancelBooking(id);
+
+        model.addAttribute("success", "Bokningen har avbokats.");
+        model.addAttribute("pageTitle", "Bokning avbokad");
+
+        return "booking-cancelled";
     }
 }
