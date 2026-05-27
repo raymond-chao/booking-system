@@ -16,15 +16,7 @@
                 BookingSystem
             </a>
 
-            <a th:href="@{/rooms/available}"
-               class="text-gray-600 hover:text-amber-600 font-medium">
-                Lediga rum
-            </a>
 
-            <a th:href="@{/rooms}"
-               class="text-gray-600 hover:text-amber-600 font-medium">
-                Rum
-            </a>
 
         </div>
 
@@ -56,6 +48,12 @@
                 <a th:href="@{/logout}"
                    class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600">
                     Logout
+                </a>
+
+                <a th:href="@{/account}"
+                   class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl transition">
+                    <i class="fas fa-user-cog mr-2"></i>
+                    Mitt konto
                 </a>
 
             </div>

@@ -93,6 +93,11 @@ public CustomerService(CustomerRepository customerRepository,
     }
 
 
+    public boolean hasActiveBookings(Long customerId) {
+        return bookingRepository.existsByCustomerId(customerId);
+    }
+
+
 //    public Customer save(Customer customer) {
 //        if (customerRepository.existsByEmail(customer.getEmail())) {
 //           throw new BadRequestException("Email already exists");
@@ -109,6 +114,8 @@ public CustomerService(CustomerRepository customerRepository,
     public Optional<Customer> findByEmail(String email) {
         return customerRepository.findByEmail(email);
     }
+
+
 
 
     public Customer findById(Long id) {
