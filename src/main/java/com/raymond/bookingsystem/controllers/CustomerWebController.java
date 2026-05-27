@@ -34,18 +34,6 @@ public class CustomerWebController {
 
 
 
-//    @PostMapping("/save")
-//    public String saveCustomer(@ModelAttribute Customer customer) {
-//
-//        if (customer.getId() != null) {
-//            customerService.updateCustomer(customer.getId(), customer);
-//        } else {
-//            customerService.save(customer);
-//        }
-//
-//        return "redirect:/customers";
-//    }
-
     @PostMapping("/save")
     public String saveCustomer(@ModelAttribute Customer customer,
                                RedirectAttributes redirectAttributes) {
@@ -68,12 +56,6 @@ public class CustomerWebController {
     }
 
 
-
-//    @PostMapping("/delete/{id}")
-//    public String deleteCustomer(@PathVariable Long id) {
-//        customerService.deleteCustomer(id);
-//        return "redirect:/customers";
-//    }
 
     @PostMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -104,6 +86,14 @@ public class CustomerWebController {
     @GetMapping("/register")
     public String registerPage() {
         return "register"; // register.html
+    }
+
+    @PostMapping("/account/update")
+    public String updateAccount(@ModelAttribute Customer customer) {
+
+        customerService.updateCustomer(customer.getId(), customer);
+
+        return "redirect:/account";
     }
 
 

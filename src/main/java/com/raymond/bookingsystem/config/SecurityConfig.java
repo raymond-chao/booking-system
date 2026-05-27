@@ -34,7 +34,9 @@ public class SecurityConfig {
 
                         // BOOKING KRÄVER LOGIN
                         .requestMatchers(
-                                "/book-room"
+                                "/book-room",
+                                "/account/**",
+                                "/my-bookings/**"
                         ).authenticated()
 
                         // allt annat är fritt (eller kan du ändra senare)
@@ -47,6 +49,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("username")  // email
                         .passwordParameter("password")
+                        .defaultSuccessUrl("/account", true)
                         .defaultSuccessUrl("/rooms", true)
                         .permitAll()
                 )
@@ -54,6 +57,8 @@ public class SecurityConfig {
                 // LOGOUT
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
+
+
                 );
 
         return http.build();

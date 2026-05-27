@@ -26,6 +26,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByCustomerId(Long customerId);
 
+    boolean existsByCustomerId(Long customerId);
+
     boolean existsByBookingConfirmation(String bookingConfirmation);
 
     Optional<Booking> findByBookingConfirmationAndCustomerNameIgnoreCase(
