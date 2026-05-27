@@ -1,33 +1,70 @@
-    <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="sv" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<th:block th:fragment="navbar">
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-between items-center h-16">
+<body>
 
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-home text-3xl text-amber-600"></i>
-                    <div>
-                        <span class="font-bold text-2xl text-gray-800">RMJ</span>
-                        <span class="text-sm text-gray-500 block -mt-1">Pensionat</span>
-                    </div>
-                </div>
+<nav th:fragment="navbar"
+     class="bg-white shadow-md">
 
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-gray-700 hover:text-amber-600 font-medium transition">Hem</a>
-                    <a href="/rooms" class="text-gray-700 hover:text-amber-600 font-medium transition">Våra Rum</a>
-                    <a href="/available-rooms" class="text-gray-700 hover:text-amber-600 font-medium transition">Lediga Rum</a>
-                    <a href="/bookings" class="text-gray-700 hover:text-amber-600 font-medium transition">Mina Bokningar</a>
-                </div>
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-                <div class="flex items-center space-x-4">
-                    <a href="/login" class="px-5 py-2 text-gray-700 hover:text-amber-600 font-medium transition">Logga in</a>
-                    <a href="/register" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg font-medium transition">Bli Medlem</a>
-                </div>
-            </div>
+        <!-- LEFT SIDE -->
+        <div class="flex items-center gap-6">
+
+            <a th:href="@{/}" class="text-xl font-bold text-gray-800">
+                BookingSystem
+            </a>
+
+            <a th:href="@{/rooms/available}"
+               class="text-gray-600 hover:text-amber-600 font-medium">
+                Lediga rum
+            </a>
+
+            <a th:href="@{/rooms}"
+               class="text-gray-600 hover:text-amber-600 font-medium">
+                Rum
+            </a>
+
         </div>
-    </nav>
-</th:block>
 
+        <!-- RIGHT SIDE -->
+        <div class="flex items-center gap-4">
+
+            <!-- NOT LOGGED IN -->
+            <div sec:authorize="isAnonymous()" class="flex items-center gap-3">
+
+                <a th:href="@{/customers/new}"
+                   class="px-4 py-2 border rounded-xl text-gray-700 hover:bg-gray-100">
+                    Sign up
+                </a>
+
+                <a th:href="@{/login}"
+                   class="px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700">
+                    Login
+                </a>
+
+            </div>
+
+            <!-- LOGGED IN -->
+            <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+
+                <span class="text-gray-600">
+                    👤 <span sec:authentication="principal.username"></span>
+                </span>
+
+                <a th:href="@{/logout}"
+                   class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600">
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+</body>
 </html>

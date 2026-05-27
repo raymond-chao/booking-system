@@ -2,6 +2,7 @@ package com.raymond.bookingsystem.controllers;
 
 
 import com.raymond.bookingsystem.error.BadRequestException;
+import com.raymond.bookingsystem.model.CreateCustomerRequest;
 import com.raymond.bookingsystem.model.Customer;
 import org.springframework.ui.Model;
 import com.raymond.bookingsystem.service.CustomerService;
@@ -33,16 +34,37 @@ public class CustomerWebController {
 
 
 
+//    @PostMapping("/save")
+//    public String saveCustomer(@ModelAttribute Customer customer) {
+//
+//        if (customer.getId() != null) {
+//            customerService.updateCustomer(customer.getId(), customer);
+//        } else {
+//            customerService.save(customer);
+//        }
+//
+//        return "redirect:/customers";
+//    }
+
     @PostMapping("/save")
-    public String saveCustomer(@ModelAttribute Customer customer) {
+    public String saveCustomer(@ModelAttribute Customer customer,
+                               RedirectAttributes redirectAttributes) {
 
         if (customer.getId() != null) {
             customerService.updateCustomer(customer.getId(), customer);
         } else {
-            customerService.save(customer);
+            CreateCustomerRequest request = new CreateCustomerRequest(
+                    customer.getName(),
+                    customer.getEmail(),
+                    customer.getPhoneNumber(),
+                    customer.getPassword()
+            );
+
+            customerService.createCustomer(request);
+            redirectAttributes.addFlashAttribute("Success", "Välkommen! Dit konto är skapad");
         }
 
-        return "redirect:/customers";
+        return "redirect:/available-rooms";
     }
 
 
@@ -72,5 +94,18 @@ public class CustomerWebController {
         model.addAttribute("customer", customer);
         return "customer-form";
     }
+
+    @PostMapping("/ui")
+    public String createCustomerUI(@ModelAttribute CreateCustomerRequest request) {
+        customerService.createCustomer(request);
+        return "redirect:/customers";
+    }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register"; // register.html
+    }
+
+
 
 }

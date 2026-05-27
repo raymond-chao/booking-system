@@ -4,7 +4,9 @@ import com.raymond.bookingsystem.model.Booking;
 import com.raymond.bookingsystem.model.CreateCustomerRequest;
 import com.raymond.bookingsystem.repository.*;
 import com.raymond.bookingsystem.model.Customer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,10 +21,22 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final BookingRepository bookingRepository;
 
-    public CustomerService(CustomerRepository customerRepository, BookingRepository bookingRepository) {
-        this.customerRepository = customerRepository;
-        this.bookingRepository = bookingRepository;
-    }
+
+    private PasswordEncoder passwordEncoder;
+
+//    public CustomerService(CustomerRepository customerRepository, BookingRepository bookingRepository) {
+//        this.customerRepository = customerRepository;
+//        this.bookingRepository = bookingRepository;
+//    }
+
+public CustomerService(CustomerRepository customerRepository,
+                       BookingRepository bookingRepository,
+                       PasswordEncoder passwordEncoder) {
+    this.customerRepository = customerRepository;
+    this.bookingRepository = bookingRepository;
+    this.passwordEncoder = passwordEncoder;
+}
+
 
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
@@ -79,12 +93,13 @@ public class CustomerService {
     }
 
 
-    public Customer save(Customer customer) {
-        if (customerRepository.existsByEmail(customer.getEmail())) {
-            throw new BadRequestException("Email already exists");
-        }
-        return customerRepository.save(customer);
-    }
+//    public Customer save(Customer customer) {
+//        if (customerRepository.existsByEmail(customer.getEmail())) {
+//           throw new BadRequestException("Email already exists");
+//        }
+//        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+//        return customerRepository.save(customer);
+//    }
 
     public boolean emailExists(String email) {
         return customerRepository.existsByEmail(email);
@@ -106,7 +121,7 @@ public class CustomerService {
         customer.setName(request.name());
         customer.setEmail(request.email());
         customer.setPhoneNumber(request.phoneNumber());
-        customer.setPassword(request.password());
+        customer.setPassword(passwordEncoder.encode(request.password()));
         customer.setRole("Customer");
 
         return customerRepository.save(customer);

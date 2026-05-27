@@ -6,6 +6,12 @@
 </head>
 
 <body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div th:if="${success}" class="bg-green-100 text-green-700 p-4 rounded-xl mb-4">
+    <span th:text="${success}"></span>
+</div>
+
 <div th:fragment="content">
 
     <div class="max-w-7xl mx-auto px-6 py-12">
