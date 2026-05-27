@@ -87,7 +87,7 @@ public class Booking {
         this.room = room;
     }
 
-    public Customer setCustomer() {
+    public Customer getCustomer() {
         return customer;
     }
 

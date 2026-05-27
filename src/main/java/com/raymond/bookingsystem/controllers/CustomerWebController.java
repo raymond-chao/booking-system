@@ -52,7 +52,7 @@ public class CustomerWebController {
             redirectAttributes.addFlashAttribute("Success", "Välkommen! Dit konto är skapad");
         }
 
-        return "redirect:/available-rooms";
+        return "redirect:/rooms";
     }
 
 
