@@ -17,15 +17,31 @@ public class AccountController {
         this.customerService = customerService;
     }
 
+//    @GetMapping("/account")
+//    public String accountPage(Model model,
+//                              Authentication authentication) {
+//
+//        String email = authentication.getName();
+//        model.addAttribute("email", email);
+//
+//        return "account";
+//    }
+
+
     @GetMapping("/account")
-    public String accountPage(Model model,
-                              Authentication authentication) {
+    public String accountPage(Model model, Authentication authentication) {
 
         String email = authentication.getName();
-        model.addAttribute("email", email);
+
+        Customer customer = customerService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        model.addAttribute("customer", customer);
+        model.addAttribute("bookings", customer.getBookings());
 
         return "account";
     }
+
 
     @GetMapping("/account/edit")
     public String editAccountPage(Model model,
