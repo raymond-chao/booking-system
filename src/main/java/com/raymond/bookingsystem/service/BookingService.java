@@ -139,7 +139,7 @@ public class BookingService {
         room.setAvailable(true);
         roomRepository.save(room);
 
-        bookingRepository.save(booking);
+        bookingRepository.delete(booking);
     }
 
     public List<Booking> getAllBookings() {
