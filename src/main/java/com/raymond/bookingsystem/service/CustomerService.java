@@ -19,14 +19,8 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final BookingRepository bookingRepository;
+    private final PasswordEncoder passwordEncoder;
 
-
-    private PasswordEncoder passwordEncoder;
-
-//    public CustomerService(CustomerRepository customerRepository, BookingRepository bookingRepository) {
-//        this.customerRepository = customerRepository;
-//        this.bookingRepository = bookingRepository;
-//    }
 
 public CustomerService(CustomerRepository customerRepository,
                        BookingRepository bookingRepository,
@@ -95,15 +89,6 @@ public CustomerService(CustomerRepository customerRepository,
     public boolean hasActiveBookings(Long customerId) {
         return bookingRepository.existsByCustomerId(customerId);
     }
-
-
-//    public Customer save(Customer customer) {
-//        if (customerRepository.existsByEmail(customer.getEmail())) {
-//           throw new BadRequestException("Email already exists");
-//        }
-//        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-//        return customerRepository.save(customer);
-//    }
 
 
     public Optional<Customer> findByEmail(String email) {

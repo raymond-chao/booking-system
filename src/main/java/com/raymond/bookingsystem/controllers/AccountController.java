@@ -20,17 +20,6 @@ public class AccountController {
         this.customerService = customerService;
     }
 
-//    @GetMapping("/account")
-//    public String accountPage(Model model,
-//                              Authentication authentication) {
-//
-//        String email = authentication.getName();
-//        model.addAttribute("email", email);
-//
-//        return "account";
-//    }
-
-
     @GetMapping("/account")
     public String accountPage(Model model, Authentication authentication) {
 
