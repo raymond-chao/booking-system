@@ -14,12 +14,12 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull(message = "Check-in date cannot be empty")
-    @FutureOrPresent(message = "Check-in date must be in the future")
+    @NotNull(message = "Utcheckningsdatumet kan inte vara tomt")
+    @FutureOrPresent(message = "Utcheckningsdatumet måste vara i framtiden")
     private LocalDate checkInDate;
 
-    @NotNull(message = "Check-out date cannot be empty")
-    @FutureOrPresent(message = "Check-out date must be in the future")
+    @NotNull(message = "Utcheckningsdatumet kan inte vara tomt")
+    @FutureOrPresent(message = "Utcheckningsdatumet måste vara i framtiden")
     private LocalDate checkOutDate;
 
     private int numOfGuests;
