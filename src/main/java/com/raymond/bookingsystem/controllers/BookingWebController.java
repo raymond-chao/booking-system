@@ -170,7 +170,6 @@ public class BookingWebController {
             @RequestParam Long roomId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam int numOfGuests,
             Model model
     ) {
         try {
@@ -180,7 +179,6 @@ public class BookingWebController {
             updatedBooking.setRoom(room);
             updatedBooking.setCheckInDate(checkInDate);
             updatedBooking.setCheckOutDate(checkOutDate);
-            updatedBooking.setNumOfGuests(numOfGuests);
 
             Booking savedBooking = bookingService.updateBooking(id, updatedBooking);
 

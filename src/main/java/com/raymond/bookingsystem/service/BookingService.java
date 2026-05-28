@@ -4,7 +4,7 @@ import com.raymond.bookingsystem.model.Booking;
 import com.raymond.bookingsystem.model.Customer;
 import com.raymond.bookingsystem.model.Room;
 import com.raymond.bookingsystem.repository.BookingRepository;
-import com.raymond.bookingsystem.repository.BookingStatus;
+import com.raymond.bookingsystem.model.BookingStatus;
 import com.raymond.bookingsystem.repository.CustomerRepository;
 import com.raymond.bookingsystem.repository.RoomRepository;
 import org.springframework.stereotype.Service;
@@ -100,14 +100,6 @@ public class BookingService {
 
         if (hasOtherConflicts) {
             throw new RuntimeException("Datumkonflikt. Rummet är redan bokat under valda datum.");
-        }
-
-        if (updatedBooking.getNumOfGuests() < 1) {
-            throw new RuntimeException("Antal gäster måste vara minst 1.");
-        }
-
-        if (updatedBooking.getNumOfGuests() > room.getBeds()) {
-            throw new RuntimeException("Antal gäster kan inte vara fler än antal sängar i rummet.");
         }
 
         existing.setCheckInDate(updatedBooking.getCheckInDate());

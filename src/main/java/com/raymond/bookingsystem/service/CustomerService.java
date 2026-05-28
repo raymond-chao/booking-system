@@ -1,6 +1,7 @@
 package com.raymond.bookingsystem.service;
 
 import com.raymond.bookingsystem.model.Booking;
+import com.raymond.bookingsystem.model.BookingStatus;
 import com.raymond.bookingsystem.model.CreateCustomerRequest;
 import com.raymond.bookingsystem.repository.*;
 import com.raymond.bookingsystem.model.Customer;

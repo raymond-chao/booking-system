@@ -1,4 +1,4 @@
-package com.raymond.bookingsystem.repository;
+package com.raymond.bookingsystem.model;
 
 public enum BookingStatus {
     ACTIVE,
