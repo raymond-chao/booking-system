@@ -9,6 +9,7 @@ import com.raymond.bookingsystem.repository.CustomerRepository;
 import com.raymond.bookingsystem.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -34,6 +35,10 @@ public class BookingService {
 
         if (!booking.getCheckOutDate().isAfter(booking.getCheckInDate())) {
             throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
+        }
+
+        if (booking.getCheckInDate().isBefore(LocalDate.now())) {
+            throw new RuntimeException("Incheckningsdatum kan inte vara i det förflutna.");
         }
 
         Customer customer = customerRepository.findById(customerId)
