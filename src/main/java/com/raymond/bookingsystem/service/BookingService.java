@@ -35,13 +35,7 @@ public class BookingService {
     @Transactional
     public Booking createBooking(Booking booking, Long customerId) {
 
-        if (!booking.getCheckOutDate().isAfter(booking.getCheckInDate())) {
-            throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
-        }
-
-        if (booking.getCheckInDate().isBefore(LocalDate.now())) {
-            throw new RuntimeException("Incheckningsdatum kan inte vara i det förflutna.");
-        }
+        validateDates(booking.getCheckInDate(), booking.getCheckOutDate());
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -49,13 +43,7 @@ public class BookingService {
         Room room = roomRepository.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
 
-        if (booking.getNumOfGuests() < 1) {
-            throw new RuntimeException("Antal gäster måste vara minst 1.");
-        }
-
-        if (booking.getNumOfGuests() > room.getBeds()) {
-            throw new RuntimeException("Antal gäster överstiger antalet sängar i rummet.");
-        }
+        validateGuests(booking.getNumOfGuests(), room.getBeds());
 
         booking.setCustomer(customer);
         booking.setRoom(room);
@@ -78,6 +66,24 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    private void validateDates(LocalDate checkIn, LocalDate checkOut) {
+        if (!checkOut.isAfter(checkIn)) {
+            throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
+        }
+        if (checkIn.isBefore(LocalDate.now())) {
+            throw new RuntimeException("Incheckningsdatum kan inte vara i det förflutna.");
+        }
+    }
+
+    private void validateGuests(int numOfGuests, int beds) {
+        if (numOfGuests < 1) {
+            throw new RuntimeException("Antal gäster måste vara minst 1.");
+        }
+        if (numOfGuests > beds) {
+            throw new RuntimeException("Antal gäster överstiger antalet sängar i rummet.");
+        }
+    }
+
     private String generateUniqueBookingConfirmation() {
         String confirmationNumber;
 
@@ -93,15 +99,15 @@ public class BookingService {
     @Transactional
     public Booking updateBooking(Long id, Booking updatedBooking) {
 
-        if (!updatedBooking.getCheckOutDate().isAfter(updatedBooking.getCheckInDate())) {
-            throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
-        }
+        validateDates(updatedBooking.getCheckInDate(), updatedBooking.getCheckOutDate());
 
         Booking existing = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
 
         Room room = roomRepository.findById(updatedBooking.getRoom().getId())
                 .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
+
+        validateGuests(updatedBooking.getNumOfGuests(), room.getBeds());
 
         List<Booking> conflicts =
                 bookingRepository.findConflictingBookings(
@@ -135,7 +141,7 @@ public class BookingService {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
     }
-@Transactional
+    @Transactional
     public void cancelBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
