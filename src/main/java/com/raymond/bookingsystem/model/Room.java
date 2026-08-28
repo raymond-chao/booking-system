@@ -42,7 +42,7 @@ public class Room {
     @Column(nullable = false)
     private boolean available = true;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Booking> bookings = new ArrayList<>();
     
     public Room(String roomNumber, int beds, BigDecimal pricePerNight, String description) {
