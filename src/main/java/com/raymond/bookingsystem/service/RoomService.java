@@ -25,19 +25,19 @@ public class RoomService {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
     }
-
     public List<Room> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
         if (checkIn == null || checkOut == null) {
             throw new IllegalArgumentException("In- och utcheckningsdatum måste anges");
         }
-        if (checkIn.isAfter(checkOut)) {
-            throw new IllegalArgumentException("Incheckningsdatum måste vara före utcheckningsdatum");
+        if (!checkOut.isAfter(checkIn)) {
+            throw new IllegalArgumentException("Utcheckningsdatum måste vara efter incheckningsdatum!");
         }
         if (checkIn.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Incheckningsdatum kan inte vara i det förflutna");
         }
         return repository.findAvailableRooms(checkIn, checkOut);
     }
+
 
     public boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut) {
         return repository.isRoomAvailable(roomId, checkIn, checkOut);
