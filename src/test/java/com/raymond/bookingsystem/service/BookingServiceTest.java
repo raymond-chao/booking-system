@@ -108,21 +108,28 @@ BookingServiceTest {
         verify(bookingRepository, never()).save(any());
     }
 
-//    @Test
-//    void cancelBookingSatterStatusCANCELLEDFrigorRummetOchRaderar() {
-//        Booking booking = newBooking(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
-//        booking.setStatus(BookingStatus.ACTIVE);
-//        room.setAvailable(false);
-//
-//        when(bookingRepository.findById(5L)).thenReturn(Optional.of(booking));
-//
-//        bookingService.cancelBooking(5L);
-//
-//        assertThat(booking.getStatus()).isEqualTo(BookingStatus.CANCELLED);
-//        assertThat(room.isAvailable()).isTrue();
-//        verify(roomRepository, times(1)).save(room);
-//        verify(bookingRepository, times(1)).delete(booking);
-//    }
+    @Test
+    void cancelBookingRaderarBokningen() {
+        Booking booking = newBooking(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
+        booking.setStatus(BookingStatus.ACTIVE);
+
+        when(bookingRepository.findById(5L)).thenReturn(Optional.of(booking));
+
+        bookingService.cancelBooking(5L);
+
+        verify(bookingRepository, times(1)).delete(booking);
+    }
+
+    @Test
+    void cancelBookingKastarFelNarBokningSaknas() {
+        when(bookingRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> bookingService.cancelBooking(99L))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Bokning hittades inte");
+
+        verify(bookingRepository, never()).delete(any(Booking.class));
+    }
 
     @Test
     void getBookingByIdKastarFelNarBokningSaknas() {

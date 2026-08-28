@@ -125,8 +125,6 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
 
-        booking.setStatus(BookingStatus.CANCELLED);
-
         bookingRepository.delete(booking);
     }
 
