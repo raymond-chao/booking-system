@@ -39,9 +39,6 @@ public class Room {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
-    private boolean available = true;
-
     @OneToMany(mappedBy = "room", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Booking> bookings = new ArrayList<>();
     
@@ -76,13 +73,6 @@ public class Room {
         return description;
     }
 
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
 
     public List<Booking> getBookings() {
         return bookings;

@@ -22,7 +22,7 @@
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
                 <h2 class="text-2xl font-semibold mb-3" th:text="'Rum ' + ${room.roomNumber}"></h2>
 
-                <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-700">
+                <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
                     <div>
                         <span class="font-semibold block">Antal sängar</span>
                         <span th:text="${room.beds}"></span>
@@ -31,11 +31,6 @@
                     <div>
                         <span class="font-semibold block">Pris per natt</span>
                         <span th:text="${room.pricePerNight} + ' kr'"></span>
-                    </div>
-
-                    <div>
-                        <span class="font-semibold block">Status</span>
-                        <span th:text="${room.available} ? 'Ledigt' : 'Upptaget'"></span>
                     </div>
                 </div>
 

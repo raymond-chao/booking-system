@@ -39,6 +39,4 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                             @Param("checkOut") LocalDate checkOut);
 
     List<Room> findByBeds(int beds);
-
-    List<Room> findByAvailableTrue();
 }
