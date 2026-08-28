@@ -50,6 +50,7 @@ BookingServiceTest {
     void setUp() {
         room = new Room();
         room.setId(1L);
+        room.setBeds(2);
 
         customer = new Customer();
         customer.setId(2L);
@@ -59,6 +60,7 @@ BookingServiceTest {
         Booking booking = new Booking();
         booking.setCheckInDate(checkIn);
         booking.setCheckOutDate(checkOut);
+        booking.setNumOfGuests(1);
         booking.setRoom(room);
         return booking;
     }
@@ -104,6 +106,21 @@ BookingServiceTest {
         assertThatThrownBy(() -> bookingService.createBooking(booking, 2L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Rummet är redan bokat");
+
+        verify(bookingRepository, never()).save(any());
+    }
+
+    @Test
+    void createBookingKastarFelNarAntalGasterOverstigerSangar() {
+        Booking booking = newBooking(LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
+        booking.setNumOfGuests(3); // rummet har 2 sängar
+
+        when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+        assertThatThrownBy(() -> bookingService.createBooking(booking, 2L))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("överstiger antalet sängar");
 
         verify(bookingRepository, never()).save(any());
     }

@@ -7,6 +7,7 @@ import com.raymond.bookingsystem.repository.BookingRepository;
 import com.raymond.bookingsystem.model.BookingStatus;
 import com.raymond.bookingsystem.repository.CustomerRepository;
 import com.raymond.bookingsystem.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class BookingService {
     }
 
     //Uppdaterad booking med customer
+    @Transactional
     public Booking createBooking(Booking booking, Long customerId) {
 
         if (!booking.getCheckOutDate().isAfter(booking.getCheckInDate())) {
@@ -46,6 +48,14 @@ public class BookingService {
 
         Room room = roomRepository.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
+
+        if (booking.getNumOfGuests() < 1) {
+            throw new RuntimeException("Antal gäster måste vara minst 1.");
+        }
+
+        if (booking.getNumOfGuests() > room.getBeds()) {
+            throw new RuntimeException("Antal gäster överstiger antalet sängar i rummet.");
+        }
 
         booking.setCustomer(customer);
         booking.setRoom(room);
@@ -80,7 +90,7 @@ public class BookingService {
         return confirmationNumber;
     }
 
-
+    @Transactional
     public Booking updateBooking(Long id, Booking updatedBooking) {
 
         if (!updatedBooking.getCheckOutDate().isAfter(updatedBooking.getCheckInDate())) {
@@ -125,7 +135,7 @@ public class BookingService {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
     }
-
+@Transactional
     public void cancelBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
