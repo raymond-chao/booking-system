@@ -127,10 +127,6 @@ public class BookingService {
 
         booking.setStatus(BookingStatus.CANCELLED);
 
-        Room room = booking.getRoom();
-        room.setAvailable(true);
-        roomRepository.save(room);
-
         bookingRepository.delete(booking);
     }
 
