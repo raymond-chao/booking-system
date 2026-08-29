@@ -110,12 +110,6 @@ public class BookingService {
         return bookingRepository.save(existing);
     }
 
-    public Booking findBookingForCustomer(String customerName, String bookingConfirmation) {
-        return bookingRepository
-                .findByBookingConfirmationAndCustomerNameIgnoreCase(bookingConfirmation, customerName)
-                .orElseThrow(() -> new RuntimeException("Ingen bokning hittades med angivet namn och bokningsnummer."));
-    }
-
     public Booking getBookingById(Long id) {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));

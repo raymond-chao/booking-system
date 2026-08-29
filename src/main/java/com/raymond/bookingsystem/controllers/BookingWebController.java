@@ -123,33 +123,6 @@ public class BookingWebController {
         return "booking-confirmation";
     }
 
-    @GetMapping("/bookings")
-    public String showFindBookingPage(Model model) {
-        model.addAttribute("pageTitle", "Hitta din bokning");
-        return "booking-search";
-    }
-
-    @PostMapping("/bookings/search")
-    public String findBooking(
-            @RequestParam String name,
-            @RequestParam String bookingConfirmation,
-            Model model
-    ) {
-        try {
-            Booking booking = bookingService.findBookingForCustomer(name, bookingConfirmation);
-
-            model.addAttribute("booking", booking);
-            model.addAttribute("pageTitle", "Din bokning");
-
-            return "booking-details";
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("pageTitle", "Hitta din bokning");
-
-            return "booking-search";
-        }
-    }
-
     @GetMapping("/bookings/edit/{id}")
     public String showEditBookingForm(
             @PathVariable Long id,

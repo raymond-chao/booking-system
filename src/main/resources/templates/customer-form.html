@@ -32,6 +32,11 @@
                     </p>
                 </div>
 
+                <div th:if="${registerError}"
+                     class="bg-red-100 border border-red-300 text-red-700 rounded-xl p-4 mb-5"
+                     th:text="${registerError}">
+                </div>
+
                 <form th:action="@{/customers/save}" method="post" th:object="${customer}" class="space-y-5">
 
                     <input type="hidden" th:field="*{id}"/>
@@ -102,6 +107,11 @@
                     <p class="text-gray-600 mt-2">
                         Har du redan ett konto? Logga in här.
                     </p>
+                </div>
+
+                <div th:if="${param.error}"
+                     class="bg-red-100 border border-red-300 text-red-700 rounded-xl p-4 mb-5">
+                    Fel e-post eller lösenord. Kontrollera dina uppgifter, eller skapa ett konto om du inte har ett.
                 </div>
 
                 <form th:action="@{/login}" method="post" class="space-y-5">

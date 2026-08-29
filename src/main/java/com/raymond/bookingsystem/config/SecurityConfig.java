@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .defaultSuccessUrl("/account", true)
                         .defaultSuccessUrl("/rooms", true)
+                        .failureUrl("/customers/new?error")
                         .permitAll()
                 )
 

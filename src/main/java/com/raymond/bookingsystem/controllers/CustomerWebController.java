@@ -50,6 +50,15 @@ public class CustomerWebController {
             return "redirect:/customers";
         }
 
+        // 0. kontrollera att e-posten inte redan är registrerad
+        if (customerService.findByEmail(customer.getEmail()).isPresent()) {
+            redirectAttributes.addFlashAttribute(
+                    "registerError",
+                    "Du har redan ett konto med den här e-posten. Logga in istället."
+            );
+            return "redirect:/customers/new";
+        }
+
         // 1. skapa konto
         CreateCustomerRequest req = new CreateCustomerRequest(
                 customer.getName(),
