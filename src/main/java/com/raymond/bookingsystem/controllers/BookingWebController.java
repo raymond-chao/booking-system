@@ -99,6 +99,7 @@ public class BookingWebController {
             @RequestParam Long roomId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam int numOfGuests,
             Model model,
             Authentication authentication
     ) {
@@ -113,6 +114,7 @@ public class BookingWebController {
         booking.setRoom(room);
         booking.setCheckInDate(checkInDate);
         booking.setCheckOutDate(checkOutDate);
+        booking.setNumOfGuests(numOfGuests);
 
         Booking savedBooking = bookingService.createBooking(booking, customer.getId());
 
