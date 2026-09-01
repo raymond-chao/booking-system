@@ -102,7 +102,7 @@ public class BookingWebController {
         booking.setRoom(room);
         booking.setCheckInDate(checkInDate);
         booking.setCheckOutDate(checkOutDate);
-        booking.setNumOfGuests(numOfGuests);
+        //booking.setNumOfGuests(numOfGuests);
 
         Booking savedBooking = bookingService.createBooking(booking, email);
 
