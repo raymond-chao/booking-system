@@ -66,7 +66,7 @@ class RoomServiceTest {
 
         assertThatThrownBy(() -> roomService.getAvailableRooms(checkIn, checkOut))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("måste vara före utcheckningsdatum");
+                .hasMessageContaining("Utcheckningsdatum måste vara efter incheckningsdatum");
 
         verifyAldrigAnropatRepository();
     }

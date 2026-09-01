@@ -9,8 +9,10 @@ import com.raymond.bookingsystem.model.Room;
 import com.raymond.bookingsystem.repository.BookingRepository;
 import com.raymond.bookingsystem.model.BookingStatus;
 import com.raymond.bookingsystem.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -66,6 +68,24 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    private void validateDates(LocalDate checkIn, LocalDate checkOut) {
+        if (!checkOut.isAfter(checkIn)) {
+            throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
+        }
+        if (checkIn.isBefore(LocalDate.now())) {
+            throw new RuntimeException("Incheckningsdatum kan inte vara i det förflutna.");
+        }
+    }
+
+    private void validateGuests(int numOfGuests, int beds) {
+        if (numOfGuests < 1) {
+            throw new RuntimeException("Antal gäster måste vara minst 1.");
+        }
+        if (numOfGuests > beds) {
+            throw new RuntimeException("Antal gäster överstiger antalet sängar i rummet.");
+        }
+    }
+
     private String generateUniqueBookingConfirmation() {
         String confirmationNumber;
 
@@ -78,7 +98,7 @@ public class BookingService {
         return confirmationNumber;
     }
 
-
+    @Transactional
     public Booking updateBooking(Long id, Booking updatedBooking) {
 
         if (!updatedBooking.getCheckOutDate().isAfter(updatedBooking.getCheckInDate())) {
@@ -90,6 +110,8 @@ public class BookingService {
 
         Room room = roomRepository.findById(updatedBooking.getRoom().getId())
                 .orElseThrow(() -> new NotFoundException("Rummet hittades inte"));
+
+        validateGuests(updatedBooking.getNumOfGuests(), room.getBeds());
 
         List<Booking> conflicts =
                 bookingRepository.findConflictingBookings(
@@ -117,12 +139,10 @@ public class BookingService {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Bokning hittades inte"));
     }
-
+    @Transactional
     public void cancelBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Bokning hittades inte"));
-
-        booking.setStatus(BookingStatus.CANCELLED);
 
         bookingRepository.delete(booking);
     }
