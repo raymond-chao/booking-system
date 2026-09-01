@@ -130,4 +130,12 @@ public class BookingService {
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
+
+    public boolean hasActiveBookings(String email) {
+        return bookingRepository.existsByCustomerEmailAndStatus(email, BookingStatus.ACTIVE );
+    }
+
+    public List<Booking> getBookingByEmail(String email) {
+        return bookingRepository.findAllByCustomerEmail(email);
+    }
 }

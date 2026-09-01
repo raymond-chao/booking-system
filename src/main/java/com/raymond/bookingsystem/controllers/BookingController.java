@@ -40,4 +40,14 @@ public class BookingController {
     public void cancelBooking(@PathVariable Long id) {
         bookingService.cancelBooking(id);
     }
+
+    @GetMapping("/customer/{email}/active")
+    public boolean hasActiveBookings(@PathVariable String email) {
+         return bookingService.hasActiveBookings(email);
+    }
+
+    @GetMapping("/customer/{email}")
+    public List<Booking> getBookingsByEmail(@PathVariable String email) {
+        return bookingService.getBookingByEmail(email);
+    }
 }
