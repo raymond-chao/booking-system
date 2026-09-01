@@ -1,5 +1,7 @@
 package com.example.customer_service.service;
 
+import com.example.customer_service.client.BookingClient;
+import com.example.customer_service.error.ConflictException;
 import com.example.customer_service.model.CreateCustomerRequest;
 import com.example.customer_service.model.Customer;
 import com.example.customer_service.repository.CustomerRepository;
@@ -13,11 +15,14 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BookingClient bookingClient;
 
     public CustomerService(CustomerRepository customerRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           BookingClient bookingClient) {
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.bookingClient=bookingClient;
     }
 
     //Hämta alla kunder
@@ -30,6 +35,14 @@ public class CustomerService {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found: "+ id));
     }
+
+
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("Customer not found: " + email));
+    }
+
 
     //Skapa customer
     public Customer createCustomer(CreateCustomerRequest request) {
@@ -72,6 +85,13 @@ public class CustomerService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Customer not found: " + id));
+
+        boolean hasActiveBookings =
+                bookingClient.hasActiveBookings(customer.getEmail());
+
+        if (hasActiveBookings) {
+            throw new ConflictException("Customer has active bookings and cannot be deleted");
+        }
 
         customerRepository.delete(customer);
     }
