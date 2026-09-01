@@ -2,13 +2,10 @@ package com.raymond.bookingsystem.controllers;
 
 import com.raymond.bookingsystem.model.Booking;
 
-import com.raymond.bookingsystem.model.Customer;
 import com.raymond.bookingsystem.model.Room;
 import com.raymond.bookingsystem.service.BookingService;
-import com.raymond.bookingsystem.service.CustomerService;
 import com.raymond.bookingsystem.service.RoomService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +17,15 @@ import java.util.Map;
 public class BookingWebController {
 
     private final BookingService bookingService;
-    private final CustomerService customerService;
     private final RoomService roomService;
 
 
 
     public BookingWebController(
             BookingService bookingService,
-            CustomerService customerService,
             RoomService roomService
     ) {
         this.bookingService = bookingService;
-        this.customerService = customerService;
         this.roomService = roomService;
     }
 
@@ -97,18 +91,12 @@ public class BookingWebController {
     @PostMapping("/book-room")
     public String submitBooking(
             @RequestParam Long roomId,
+            @RequestParam String email,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam int numOfGuests,
-            Model model,
-            Authentication authentication
+            Model model
     ) {
         Room room = roomService.getRoomById(roomId);
-
-        String email = authentication.getName();
-
-        Customer customer = customerService.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Kund inte hittad"));
 
         Booking booking = new Booking();
         booking.setRoom(room);
@@ -116,40 +104,13 @@ public class BookingWebController {
         booking.setCheckOutDate(checkOutDate);
         booking.setNumOfGuests(numOfGuests);
 
-        Booking savedBooking = bookingService.createBooking(booking, customer.getId());
+        Booking savedBooking = bookingService.createBooking(booking, email);
 
         model.addAttribute("booking", savedBooking);
         model.addAttribute("room", room);
         model.addAttribute("pageTitle", "Bokning bekräftad");
 
         return "booking-confirmation";
-    }
-
-    @GetMapping("/bookings")
-    public String showFindBookingPage(Model model) {
-        model.addAttribute("pageTitle", "Hitta din bokning");
-        return "booking-search";
-    }
-
-    @PostMapping("/bookings/search")
-    public String findBooking(
-            @RequestParam String name,
-            @RequestParam String bookingConfirmation,
-            Model model
-    ) {
-        try {
-            Booking booking = bookingService.findBookingForCustomer(name, bookingConfirmation);
-
-            model.addAttribute("booking", booking);
-            model.addAttribute("pageTitle", "Din bokning");
-
-            return "booking-details";
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("pageTitle", "Hitta din bokning");
-
-            return "booking-search";
-        }
     }
 
     @GetMapping("/bookings/edit/{id}")

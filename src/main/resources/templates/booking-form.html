@@ -40,6 +40,19 @@
             <form th:action="@{/book-room}" method="post" class="space-y-6">
                 <input type="hidden" id="roomId" name="roomId" th:value="${room.id}">
 
+                <div class="space-y-2">
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                            E-post
+                        </label>
+                        <input id="email"
+                               name="email"
+                               type="email"
+                               required
+                               class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label for="checkInDate" class="block text-sm font-semibold text-gray-700 mb-2">
