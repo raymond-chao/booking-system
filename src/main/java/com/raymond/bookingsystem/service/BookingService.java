@@ -1,11 +1,13 @@
 package com.raymond.bookingsystem.service;
 
+import com.raymond.bookingsystem.client.CustomerClient;
+import com.raymond.bookingsystem.error.BadRequestException;
+import com.raymond.bookingsystem.error.ConflictException;
+import com.raymond.bookingsystem.error.NotFoundException;
 import com.raymond.bookingsystem.model.Booking;
-import com.raymond.bookingsystem.model.Customer;
 import com.raymond.bookingsystem.model.Room;
 import com.raymond.bookingsystem.repository.BookingRepository;
 import com.raymond.bookingsystem.model.BookingStatus;
-import com.raymond.bookingsystem.repository.CustomerRepository;
 import com.raymond.bookingsystem.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,32 +19,33 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
 
-    private final CustomerRepository customerRepository;
+    private final CustomerClient customerClient;
 
     private final RoomRepository roomRepository;
     
     public BookingService(BookingRepository bookingRepository,
-                          CustomerRepository customerRepository,
-                          RoomRepository roomRepository) {
+                          RoomRepository roomRepository,
+                          CustomerClient customerClient) {
         this.bookingRepository = bookingRepository;
-        this.customerRepository = customerRepository;
         this.roomRepository = roomRepository;
+        this.customerClient = customerClient;
     }
 
     //Uppdaterad booking med customer
-    public Booking createBooking(Booking booking, Long customerId) {
+    public Booking createBooking(Booking booking, String email) {
+
 
         if (!booking.getCheckOutDate().isAfter(booking.getCheckInDate())) {
-            throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
+            throw new BadRequestException("Utcheckningsdatum måste vara efter incheckningsdatum.");
+        }
+        if (!customerClient.customerExists(email)) {
+            throw new NotFoundException("Kund finns inte: " + email);
         }
 
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-
         Room room = roomRepository.findById(booking.getRoom().getId())
-                .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
+                .orElseThrow(() -> new NotFoundException("Rummet hittades inte"));
 
-        booking.setCustomer(customer);
+        booking.setCustomerEmail(email);
         booking.setRoom(room);
 
         List<Booking> conflicts =
@@ -53,7 +56,7 @@ public class BookingService {
                 );
 
         if (!conflicts.isEmpty()) {
-            throw new RuntimeException("Rummet är redan bokat dessa datum.");
+            throw new ConflictException("Rummet redan bokat dessa datum");
         }
 
         booking.setBookingConfirmation(generateUniqueBookingConfirmation());
@@ -79,14 +82,14 @@ public class BookingService {
     public Booking updateBooking(Long id, Booking updatedBooking) {
 
         if (!updatedBooking.getCheckOutDate().isAfter(updatedBooking.getCheckInDate())) {
-            throw new RuntimeException("Utcheckningsdatum måste vara efter incheckningsdatum.");
+            throw new BadRequestException("Utcheckningsdatum måste vara efter incheckningsdatum.");
         }
 
         Booking existing = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
+                .orElseThrow(() -> new NotFoundException("Bokning hittades inte"));
 
         Room room = roomRepository.findById(updatedBooking.getRoom().getId())
-                .orElseThrow(() -> new RuntimeException("Rummet hittades inte"));
+                .orElseThrow(() -> new NotFoundException("Rummet hittades inte"));
 
         List<Booking> conflicts =
                 bookingRepository.findConflictingBookings(
@@ -99,7 +102,7 @@ public class BookingService {
                 .anyMatch(b -> !b.getId().equals(id));
 
         if (hasOtherConflicts) {
-            throw new RuntimeException("Datumkonflikt. Rummet är redan bokat under valda datum.");
+            throw new ConflictException("Datumkonflikt. Rummet är redan bokat under valda datum.");
         }
 
         existing.setCheckInDate(updatedBooking.getCheckInDate());
@@ -112,12 +115,12 @@ public class BookingService {
 
     public Booking getBookingById(Long id) {
         return bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
+                .orElseThrow(() -> new NotFoundException("Bokning hittades inte"));
     }
 
     public void cancelBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Bokning hittades inte"));
+                        .orElseThrow(() -> new NotFoundException("Bokning hittades inte"));
 
         booking.setStatus(BookingStatus.CANCELLED);
 
