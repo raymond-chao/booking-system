@@ -1,59 +1,30 @@
 <!DOCTYPE html>
-<html lang="sv" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <body>
 
-<nav th:fragment="navbar"
-     class="bg-white shadow-md">
+<nav th:fragment="navbar" class="bg-white shadow-md font-display">
 
     <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
         <!-- LEFT SIDE -->
         <div class="flex items-center gap-6">
-
             <a th:href="@{/}" class="text-xl font-bold text-gray-800">
                 Pensionat RMJ
             </a>
-
-
-
         </div>
 
         <!-- RIGHT SIDE -->
         <div class="flex items-center gap-4">
 
-            <!-- NOT LOGGED IN -->
-            <div sec:authorize="isAnonymous()" class="flex items-center gap-3">
+            <a th:href="@{/rooms}"
+               class="px-4 py-2 border rounded-xl text-gray-700 hover:bg-gray-100">
+                Rum
+            </a>
 
-                <a th:href="@{/customers/new}"
-                   class="px-4 py-2 border rounded-xl text-gray-700 hover:bg-gray-100">
-                    Skapa Konto / Logga In
-                </a>
-
-
-
-            </div>
-
-            <!-- LOGGED IN -->
-            <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
-
-                <span class="text-gray-600">
-                    👤 <span sec:authentication="principal.username"></span>
-                </span>
-
-                <a th:href="@{/logout}"
-                   class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600">
-                    Logout
-                </a>
-
-                <a th:href="@{/account}"
-                   class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl transition">
-                    <i class="fas fa-user-cog mr-2"></i>
-                    Mitt konto
-                </a>
-
-            </div>
+            <!-- Registrering: peka om till kundtjänsten senare, eller ta bort -->
+            <a th:href="@{/}"
+               class="px-4 py-2 border rounded-xl text-gray-700 hover:bg-gray-100">
+                Skapa konto
+            </a>
 
         </div>
 

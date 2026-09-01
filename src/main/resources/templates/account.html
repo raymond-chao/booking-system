@@ -18,25 +18,99 @@
             Mitt konto
         </h1>
 
-        <div class="grid md:grid-cols-2 gap-6">
+        <!-- PROFILE -->
+        <div class="border rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">
+                Profil
+            </h2>
 
-            <!-- PROFILE -->
-            <div class="border rounded-2xl p-6">
-                <h2 class="text-2xl font-semibold mb-4">
-                    Profil
-                </h2>
+            <p class="mb-2">
+                <span class="font-semibold">Namn:</span>
+                <span th:text="${customer.name}"></span>
+            </p>
 
-                <p class="mb-3">
-                    <span class="font-semibold">Email:</span>
-                    <span th:text="${email}"></span>
-                </p>
+            <p class="mb-4">
+                <span class="font-semibold">Email:</span>
+                <span th:text="${customer.email}"></span>
+            </p>
 
-                <a href="/account/edit"
+            <a href="/account/edit"
+               class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-3 rounded-xl inline-block transition">
+                Ändra uppgifter
+            </a>
+        </div>
+
+        <!-- MY BOOKINGS -->
+        <div class="border rounded-2xl p-6">
+            <h2 class="text-2xl font-semibold mb-4">
+                <i class="fas fa-calendar-check text-amber-600 mr-2"></i>
+                Mina bokningar
+            </h2>
+
+            <!-- NO BOOKINGS -->
+            <div th:if="${bookings == null or bookings.isEmpty()}"
+                 class="text-gray-600">
+                <p class="mb-4">Du har inga bokningar än.</p>
+                <a href="/rooms"
                    class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-3 rounded-xl inline-block transition">
-                    Ändra uppgifter
+                    Boka ett rum
                 </a>
             </div>
 
+            <!-- BOOKINGS LIST -->
+            <div th:unless="${bookings == null or bookings.isEmpty()}"
+                 class="space-y-4">
+
+                <div th:each="booking : ${bookings}"
+                     class="border rounded-xl p-5 bg-gray-50">
+
+                    <div class="flex flex-wrap justify-between gap-4">
+
+                        <div class="space-y-1 text-gray-700">
+                            <p>
+                                <span class="font-semibold">Rum:</span>
+                                <span th:text="${booking.room.roomNumber}"></span>
+                            </p>
+                            <p>
+                                <span class="font-semibold">Incheckning:</span>
+                                <span th:text="${booking.checkInDate}"></span>
+                            </p>
+                            <p>
+                                <span class="font-semibold">Utcheckning:</span>
+                                <span th:text="${booking.checkOutDate}"></span>
+                            </p>
+                            <p>
+                                <span class="font-semibold">Bokningsnummer:</span>
+                                <span th:text="${booking.bookingConfirmation}"></span>
+                            </p>
+                            <p>
+                                <span class="font-semibold">Status:</span>
+                                <span th:text="${booking.status}"></span>
+                            </p>
+                        </div>
+
+                        <div th:if="${booking.status.name() == 'ACTIVE'}"
+                             class="flex flex-col gap-2 justify-center">
+
+                            <a th:href="@{'/bookings/edit/' + ${booking.id}}"
+                               class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold transition text-center">
+                                Ändra
+                            </a>
+
+                            <form th:action="@{'/bookings/cancel/' + ${booking.id}}"
+                                  method="post"
+                                  onsubmit="return confirm('Är du säker på att du vill avboka bokningen?');">
+                                <button type="submit"
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold transition">
+                                    Avboka
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </div>

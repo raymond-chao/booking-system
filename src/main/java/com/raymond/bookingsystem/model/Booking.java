@@ -27,14 +27,22 @@ public class Booking {
     @ManyToOne(optional = false)
     private Room room;
 
-    @ManyToOne(optional = false)
-    private Customer customer;
+    @Column(name = "customer_email")
+    private String customerEmail;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
     public Booking() {
 
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 
     public Long getId() {
@@ -83,14 +91,6 @@ public class Booking {
 
     public void setRoom(Room room) {
         this.room = room;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public BookingStatus getStatus() {return status;}
