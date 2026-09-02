@@ -94,6 +94,7 @@ public class BookingWebController {
             @RequestParam String email,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam int numOfGuests,
             Model model
     ) {
         Room room = roomService.getRoomById(roomId);
