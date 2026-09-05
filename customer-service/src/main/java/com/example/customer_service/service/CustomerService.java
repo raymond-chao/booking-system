@@ -2,6 +2,7 @@ package com.example.customer_service.service;
 
 import com.example.customer_service.client.BookingClient;
 import com.example.customer_service.error.ConflictException;
+import com.example.customer_service.error.NotFoundException;
 import com.example.customer_service.model.CreateCustomerRequest;
 import com.example.customer_service.model.Customer;
 import com.example.customer_service.repository.CustomerRepository;
@@ -40,7 +41,7 @@ public class CustomerService {
     public Customer getCustomerByEmail(String email) {
         return customerRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found: " + email));
+                        new NotFoundException("Customer not found: " + email));
     }
 
 

@@ -30,8 +30,12 @@ public class CustomerClient {
 
     }
     public CustomerDTO findByEmail(String email) {
-        return restClient.get()
-                .uri("/api/customers/email/{email}", email)
-                .retrieve().body(CustomerDTO.class);
+        try {
+            return restClient.get()
+                    .uri("/api/customers/email/{email}", email)
+                    .retrieve().body(CustomerDTO.class);
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException("Kundtjänsten är inte tillgänglig, försök igen senare. ");
+        }
     }
 }
