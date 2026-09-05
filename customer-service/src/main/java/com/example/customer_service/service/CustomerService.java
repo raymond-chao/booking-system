@@ -2,6 +2,7 @@ package com.example.customer_service.service;
 
 import com.example.customer_service.client.BookingClient;
 import com.example.customer_service.error.ConflictException;
+import com.example.customer_service.error.NotFoundException;
 import com.example.customer_service.model.CreateCustomerRequest;
 import com.example.customer_service.model.Customer;
 import com.example.customer_service.repository.CustomerRepository;
@@ -33,14 +34,14 @@ public class CustomerService {
     //Hämta specifik kund med ID
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found: "+ id));
+                .orElseThrow(() -> new NotFoundException("Customer not found: "+ id));
     }
 
 
     public Customer getCustomerByEmail(String email) {
         return customerRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found: " + email));
+                        new NotFoundException("Customer not found: " + email));
     }
 
 
@@ -63,7 +64,7 @@ public class CustomerService {
 
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found: " + id));
+                        new NotFoundException("Customer not found: " + id));
 
         if (updatedCustomer.getName() != null) {
             existingCustomer.setName(updatedCustomer.getName());
@@ -84,7 +85,7 @@ public class CustomerService {
 
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found: " + id));
+                        new NotFoundException("Customer not found: " + id));
 
         boolean hasActiveBookings =
                 bookingClient.hasActiveBookings(customer.getEmail());
