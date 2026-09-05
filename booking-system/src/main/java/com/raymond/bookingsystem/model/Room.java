@@ -1,5 +1,6 @@
 package com.raymond.bookingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -40,6 +41,7 @@ public class Room {
     private String description;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();
     
     public Room(String roomNumber, int beds, BigDecimal pricePerNight, String description) {
