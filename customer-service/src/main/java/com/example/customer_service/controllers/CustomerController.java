@@ -4,6 +4,7 @@ import com.example.customer_service.model.Customer;
 import com.example.customer_service.model.CreateCustomerRequest;
 import com.example.customer_service.service.CustomerService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,14 +36,22 @@ public class CustomerController {
         return ResponseEntity.ok(customer);
     }
 
+
+
 //    @PostMapping
-//    public Customer createCustomer(@RequestBody CreateCustomerRequest request) {
+//    public Customer createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
 //        return customerService.createCustomer(request);
 //    }
 
     @PostMapping
-    public Customer createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
-        return customerService.createCustomer(request);
+    public ResponseEntity<Customer> createCustomer(
+            @Valid @RequestBody CreateCustomerRequest request) {
+
+        Customer customer = customerService.createCustomer(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(customer);
     }
 
 
