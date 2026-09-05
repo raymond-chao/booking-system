@@ -1,5 +1,6 @@
 package com.raymond.bookingsystem.client;
 
+import com.raymond.bookingsystem.dto.CustomerDTO;
 import com.raymond.bookingsystem.error.ServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,10 @@ public class CustomerClient {
             );
         }
 
-
-
+    }
+    public CustomerDTO findByEmail(String email) {
+        return restClient.get()
+                .uri("/api/customers/email/{email}", email)
+                .retrieve().body(CustomerDTO.class);
     }
 }
