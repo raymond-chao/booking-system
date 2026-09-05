@@ -19,25 +19,34 @@
         </h1>
 
         <!-- PROFILE -->
-        <div class="border rounded-2xl p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4">
-                Profil
-            </h2>
+        <!-- Visas när ingen kund: formuläret -->
+        <div th:if="${customer == null}" class="border rounded-2xl p-6 mb-8">
+            <p class="mb-4">Skriv in din email för att se ditt konto.</p>
+            <form action="/account" method="get">
+                <input name="email" type="email" required class="border rounded-xl px-4 py-3">
+                <button type="submit" class="bg-amber-600 text-white px-5 py-3 rounded-xl">
+                    Visa konto
+                </button>
+            </form>
+        </div>
 
+        <!-- Visas när kund finns: profilen -->
+        <div th:if="${customer != null}" class="border rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Profil</h2>
             <p class="mb-2">
                 <span class="font-semibold">Namn:</span>
                 <span th:text="${customer.name}"></span>
             </p>
-
             <p class="mb-4">
                 <span class="font-semibold">Email:</span>
                 <span th:text="${customer.email}"></span>
             </p>
+        </div>
 
-            <a href="/account/edit"
-               class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-3 rounded-xl inline-block transition">
-                Ändra uppgifter
-            </a>
+<!--            <a href="/account/edit"-->
+<!--               class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-3 rounded-xl inline-block transition">-->
+<!--                Ändra uppgifter-->
+<!--            </a>-->
         </div>
 
         <!-- MY BOOKINGS -->
