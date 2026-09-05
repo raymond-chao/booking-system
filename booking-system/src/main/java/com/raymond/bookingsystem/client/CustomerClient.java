@@ -1,5 +1,6 @@
 package com.raymond.bookingsystem.client;
 
+import com.raymond.bookingsystem.dto.CreateCustomerRequest;
 import com.raymond.bookingsystem.dto.CustomerDTO;
 import com.raymond.bookingsystem.error.ServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,15 @@ public class CustomerClient {
                     .retrieve().body(CustomerDTO.class);
         } catch (RestClientException e) {
             throw new ServiceUnavailableException("Kundtjänsten är inte tillgänglig, försök igen senare. ");
+        }
+    }
+
+    public void createCustomer(CreateCustomerRequest request) {
+        try {
+            restClient.post().uri("/api/customers").body(request).retrieve().toBodilessEntity();
+
+        }catch (RestClientException e) {
+            throw new ServiceUnavailableException("Kundtjänsten är inte tillgänglig, försök igen senare");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.raymond.bookingsystem.controllers;
 
 import com.raymond.bookingsystem.client.CustomerClient;
+import com.raymond.bookingsystem.dto.CreateCustomerRequest;
 import com.raymond.bookingsystem.dto.CustomerDTO;
 import com.raymond.bookingsystem.model.Booking;
 
@@ -192,5 +193,17 @@ public class BookingWebController {
         model.addAttribute("customer", customer);
         model.addAttribute("bookings", bookings);
         return "account";
+    }
+
+    @GetMapping("/customers/new")
+    public String showRegisterForm() {
+        return "customer-form";
+    }
+
+    @PostMapping("/customers/new")
+    public String saveCustomer(@ModelAttribute CreateCustomerRequest request) {
+        customerClient.createCustomer(request);
+        return "redirect:/rooms";
+
     }
 }
