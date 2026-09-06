@@ -11,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +36,24 @@ public class BookingIntegrationTest {
                 .andExpect(status().isCreated());
 
     }
+    @Test
+    void dubbelBokningGer409() throws Exception{
+//        Arrange
+        when(customerClient.customerExists("hej@test.com")).thenReturn(true);
+        when(customerClient.customerExists("da@test.com")).thenReturn(true);
+
+//        Act and Assert
+        mockMvc.perform(post("/api/bookings").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"room\":{\"id\":1},\"checkInDate\":\"2026-10-01\",\"checkOutDate\":\"2026-10-05\",\"customerEmail\":\"hej@test.com\"}"))
+                .andExpect(status().isCreated());
+        mockMvc.perform(post("/api/bookings").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"room\":{\"id\":1},\"checkInDate\":\"2026-10-01\",\"checkOutDate\":\"2026-10-05\",\"customerEmail\":\"da@test.com\"}"))
+                .andExpect(status().isConflict());
+
+
+
+    }
+
 
 
 }
