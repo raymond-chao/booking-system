@@ -1,6 +1,7 @@
 package com.raymond.bookingsystem.integration;
 
 import com.raymond.bookingsystem.client.CustomerClient;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class BookingIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
