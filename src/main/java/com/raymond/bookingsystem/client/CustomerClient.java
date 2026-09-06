@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import com.raymond.bookingsystem.DTO.CreateCustomerRequest;
 
 @Component
 public class CustomerClient {
@@ -29,5 +30,21 @@ public class CustomerClient {
 
 
 
+    }
+
+    //skapa kund i CustomerService med DTO
+    public void createCustomer(CreateCustomerRequest request) {
+        try {
+            restClient.post()
+                    .uri("/api/customers")
+                    .body(request)
+                    .retrieve()
+                    .toBodilessEntity();
+
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException(
+                    "Kundtjänst inte tillgänglig, försök igen senare"
+            );
+        }
     }
 }
