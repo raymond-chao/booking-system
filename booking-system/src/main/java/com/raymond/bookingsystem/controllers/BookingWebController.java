@@ -1,5 +1,8 @@
 package com.raymond.bookingsystem.controllers;
 
+import com.raymond.bookingsystem.client.CustomerClient;
+import com.raymond.bookingsystem.dto.CreateCustomerRequest;
+import com.raymond.bookingsystem.dto.CustomerDTO;
 import com.raymond.bookingsystem.model.Booking;
 
 import com.raymond.bookingsystem.model.Room;
@@ -11,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -18,15 +22,18 @@ public class BookingWebController {
 
     private final BookingService bookingService;
     private final RoomService roomService;
+    private final CustomerClient customerClient;
 
 
 
     public BookingWebController(
             BookingService bookingService,
-            RoomService roomService
+            RoomService roomService,
+            CustomerClient customerClient
     ) {
         this.bookingService = bookingService;
         this.roomService = roomService;
+        this.customerClient = customerClient;
     }
 
     @GetMapping("/book-room")
@@ -103,7 +110,7 @@ public class BookingWebController {
         booking.setRoom(room);
         booking.setCheckInDate(checkInDate);
         booking.setCheckOutDate(checkOutDate);
-        booking.setNumOfGuests(numOfGuests);
+        //booking.setNumOfGuests(numOfGuests);
 
         Booking savedBooking = bookingService.createBooking(booking, email);
 
@@ -174,5 +181,29 @@ public class BookingWebController {
         model.addAttribute("pageTitle", "Bokning avbokad");
 
         return "booking-cancelled";
+    }
+
+    @GetMapping("/account")
+    public String account(@RequestParam (required = false) String email, Model model) {
+        if (email == null || email.isBlank()) {
+            return "account";
+        }
+        CustomerDTO customer = customerClient.findByEmail(email);
+        List<Booking> bookings = bookingService.getBookingByEmail(email);
+        model.addAttribute("customer", customer);
+        model.addAttribute("bookings", bookings);
+        return "account";
+    }
+
+    @GetMapping("/customers/new")
+    public String showRegisterForm() {
+        return "customer-form";
+    }
+
+    @PostMapping("/customers/new")
+    public String saveCustomer(@ModelAttribute CreateCustomerRequest request) {
+        customerClient.createCustomer(request);
+        return "redirect:/rooms";
+
     }
 }

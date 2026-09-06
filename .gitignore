@@ -1,4 +1,4 @@
-HELP.md
+booking-system/HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -29,6 +29,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 application.properties
+.env
 
 ### VS Code ###
 .vscode/

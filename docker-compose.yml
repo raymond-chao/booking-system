@@ -1,0 +1,49 @@
+services:
+  booking-service:
+    build: ./booking-system
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://booking-db:3306/booking_system
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      CUSTOMER_SERVICE_URL: http://customer-service:8081
+    depends_on:
+      booking-db:
+        condition: service_healthy
+  booking-db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: booking_system
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://customer-db:3306/customer_system
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: 8081
+      BOOKING_SERVICE_URL: http://booking-service:8080
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      customer-db:
+        condition: service_healthy
+  customer-db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: customer_system
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
