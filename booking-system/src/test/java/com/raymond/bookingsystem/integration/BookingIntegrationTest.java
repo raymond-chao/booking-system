@@ -54,6 +54,14 @@ public class BookingIntegrationTest {
 
     }
 
+    @Test
+    void okandKundGer404() throws Exception{
+        when(customerClient.customerExists(any())).thenReturn(false);
+
+        mockMvc.perform(post("/api/bookings").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"room\":{\"id\":1},\"checkInDate\":\"2026-10-01\",\"checkOutDate\":\"2026-10-05\",\"customerEmail\":\"hej@test.com\"}"))
+                .andExpect(status().isNotFound());
+    }
 
 
 }
