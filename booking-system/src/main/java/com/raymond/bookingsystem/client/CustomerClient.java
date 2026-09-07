@@ -11,41 +11,60 @@ import org.springframework.web.client.RestClientException;
 
 @Component
 public class CustomerClient {
+
     private final RestClient restClient;
 
     public CustomerClient(@Value("${customer-service.url}") String baseUrl) {
-        this.restClient = RestClient.builder().baseUrl(baseUrl).build();
+        this.restClient = RestClient.builder()
+                .baseUrl(baseUrl)
+                .build();
     }
-
 
     public boolean customerExists(String email) {
         try {
-            restClient.get().uri("/api/customers/email/{email}", email).retrieve().toBodilessEntity();
+            restClient.get()
+                    .uri("/api/customers/email/{email}", email)
+                    .retrieve()
+                    .toBodilessEntity();
+
             return true;
+
         } catch (HttpClientErrorException e) {
             return false;
+
         } catch (RestClientException e) {
-            throw new ServiceUnavailableException("Kundtjänst inte tillgänglig, försök igen senare"
+            throw new ServiceUnavailableException(
+                    "Kundtjänst inte tillgänglig, försök igen senare"
             );
         }
-
     }
+
     public CustomerDTO findByEmail(String email) {
         try {
             return restClient.get()
                     .uri("/api/customers/email/{email}", email)
-                    .retrieve().body(CustomerDTO.class);
+                    .retrieve()
+                    .body(CustomerDTO.class);
+
         } catch (RestClientException e) {
-            throw new ServiceUnavailableException("Kundtjänsten är inte tillgänglig, försök igen senare. ");
+            throw new ServiceUnavailableException(
+                    "Kundtjänsten är inte tillgänglig, försök igen senare."
+            );
         }
     }
 
     public void createCustomer(CreateCustomerRequest request) {
         try {
-            restClient.post().uri("/api/customers").body(request).retrieve().toBodilessEntity();
+            restClient.post()
+                    .uri("/api/customers")
+                    .body(request)
+                    .retrieve()
+                    .toBodilessEntity();
 
-        }catch (RestClientException e) {
-            throw new ServiceUnavailableException("Kundtjänsten är inte tillgänglig, försök igen senare");
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException(
+                    "Kundtjänsten är inte tillgänglig, försök igen senare"
+            );
         }
     }
 }

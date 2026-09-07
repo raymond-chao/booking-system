@@ -34,7 +34,7 @@ public class CustomerService {
     //Hämta specifik kund med ID
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found: "+ id));
+                .orElseThrow(() -> new NotFoundException("Customer not found: "+ id));
     }
 
 
@@ -64,7 +64,7 @@ public class CustomerService {
 
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found: " + id));
+                        new NotFoundException("Customer not found: " + id));
 
         if (updatedCustomer.getName() != null) {
             existingCustomer.setName(updatedCustomer.getName());
