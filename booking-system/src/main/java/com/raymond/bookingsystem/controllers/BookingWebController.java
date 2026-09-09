@@ -3,6 +3,7 @@ package com.raymond.bookingsystem.controllers;
 import com.raymond.bookingsystem.client.CustomerClient;
 import com.raymond.bookingsystem.dto.CreateCustomerRequest;
 import com.raymond.bookingsystem.dto.CustomerDTO;
+import com.raymond.bookingsystem.error.ConflictException;
 import com.raymond.bookingsystem.model.Booking;
 
 import com.raymond.bookingsystem.model.Room;
@@ -206,4 +207,18 @@ public class BookingWebController {
         return "redirect:/rooms";
 
     }
+    @PostMapping("/account/delete")
+    public String deleteAccount(@RequestParam String email, Model model) {
+        try {
+            CustomerDTO customer = customerClient.findByEmail(email);
+            customerClient.deleteCustomer(customer.id());
+            return "redirect:/rooms";
+        } catch (ConflictException e) {
+            model.addAttribute("customer", customerClient.findByEmail(email));
+            model.addAttribute("bookings", bookingService.getBookingByEmail(email));
+            model.addAttribute("error", e.getMessage());
+            return "account";
+        }
+    }
+
 }

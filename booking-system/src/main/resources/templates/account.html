@@ -12,6 +12,10 @@
 <div class="max-w-4xl mx-auto px-6 py-10">
 
     <div class="bg-white rounded-2xl shadow-lg p-8">
+        <div th:if="${error}"
+             class="bg-red-100 border border-red-300 text-red-700 rounded-xl p-4 mb-6"
+             th:text="${error}">
+        </div>
 
         <h1 class="text-4xl font-bold mb-6">
             <i class="fas fa-user-cog text-amber-600 mr-3"></i>
@@ -41,6 +45,15 @@
                 <span class="font-semibold">Email:</span>
                 <span th:text="${customer.email}"></span>
             </p>
+            <form th:action="@{/account/delete}" method="post"
+                  onsubmit="return confirm('Är du säker på att du vill ta bort ditt konto?');">
+                <input type="hidden" name="email" th:value="${customer.email}">
+                <button type="submit"
+                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold transition">
+                    Ta bort mitt konto
+                </button>
+            </form>
+
         </div>
 
 <!--            <a href="/account/edit"-->
