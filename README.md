@@ -82,9 +82,44 @@ customer-service ──►  GET /api/bookings/customer/{email}/active  ──►
 | 200 | OK |
 | 201 | Skapad (t.ex. ny bokning) |
 | 400 | Felaktig inmatning |
+| 401 | Saknar eller har ogiltig JWT-token |
 | 404 | Hittas inte (t.ex. okänd kund) |
 | 409 | Konflikt (dubbelbokning / kund med aktiva bokningar) |
 | 503 | Den andra tjänsten är inte tillgänglig |
+
+---
+
+## Säkerhet (JWT)
+
+Systemet använder **JWT (JSON Web Token)** för autentisering mellan tjänsterna.
+
+- **Var token skapas:** customer-service äger kundernas (hashade) lösenord. Vid
+  `POST /api/auth/login` kontrolleras email + lösenord, och vid rätt uppgifter
+  skapas en signerad JWT.
+- **Hur den skickas:** klienten skickar tokenet i varje anrop i headern
+  `Authorization: Bearer <token>`.
+- **Hur den valideras:** booking-service validerar signaturen med **samma hemliga
+  nyckel** (`JWT_SECRET`) i en interceptor, innan den skyddade endpointen körs.
+  Saknas eller är ogiltig token → **401**.
+- **Delad nyckel:** båda tjänsterna delar samma `JWT_SECRET` (HMAC-signering).
+  Det gör att booking-service kan lita på tokens som customer-service skapat –
+  utan att behöva fråga tillbaka.
+- **Skyddade endpoints:** de publika boknings-endpointsen (`/api/bookings`) kräver
+  en giltig token. Interna service-till-service-anrop
+  (`/api/bookings/customer/**`) är undantagna.
+
+Login-exempel:
+```
+POST /api/auth/login
+{ "email": "test@test.com", "password": "hemligt123" }
+
+→ { "token": "eyJhbGciOi..." }
+```
+Använd sedan tokenet mot en skyddad endpoint:
+```
+GET /api/bookings
+Authorization: Bearer eyJhbGciOi...
+```
 
 ---
 
@@ -94,11 +129,13 @@ customer-service ──►  GET /api/bookings/customer/{email}/active  ──►
 - Docker Desktop installerat och igång.
 
 ### 1. Skapa en `.env`-fil i projektroten
-Filen innehåller databasuppgifterna som Compose läser in:
+Filen innehåller databasuppgifterna och JWT-nyckeln som Compose läser in:
 ```
 DB_USERNAME=root
 DB_PASSWORD=root
+JWT_SECRET=min-superhemliga-jwt-nyckel-som-ar-minst-32-tecken
 ```
+`JWT_SECRET` måste vara **minst 32 tecken** och **samma** för båda tjänsterna.
 
 ### 2. Starta allt med ett kommando
 ```bash
@@ -124,6 +161,34 @@ docker compose down
 
 ---
 
+## Köra i Kubernetes
+
+Tjänsterna kan även köras i ett Kubernetes-kluster (t.ex. Docker Desktops
+inbyggda). Varje tjänst består av en **Deployment** (kör podden) och en
+**Service** (fast nätverksnamn i klustret), och databaslösenordet ligger i en
+**Secret**. Manifesten finns i `booking-system/k8s/` och `customer-service/k8s/`.
+
+```bash
+# 1. Bygg images lokalt (Kubernetes bygger inte själv, kör bara färdiga images)
+docker build -t booking-service ./booking-system
+docker build -t customer-service ./customer-service
+
+# 2. Applicera secret, databaser och tjänster
+kubectl apply -f booking-system/k8s/
+kubectl apply -f customer-service/k8s/
+
+# 3. Kontrollera att poddarna kör
+kubectl get pods
+
+# 4. Nå en tjänst från din dator
+kubectl port-forward service/booking-service 8080:8080
+```
+
+Tjänsterna hittar varandra via Service-namnen som DNS i klustret (t.ex.
+`booking-db`, `customer-service`) – samma princip som i Docker Compose.
+
+---
+
 ## API-översikt
 
 ### booking-service (`:8080`)
@@ -139,6 +204,7 @@ docker compose down
 ### customer-service (`:8081`)
 | Metod | URL | Beskrivning |
 |-------|-----|-------------|
+| POST | `/api/auth/login` | Logga in, returnerar en JWT-token |
 | GET | `/api/customers` | Alla kunder |
 | GET | `/api/customers/{id}` | Hämta kund via id |
 | GET | `/api/customers/email/{email}` | Hämta kund via email |
@@ -152,7 +218,9 @@ docker compose down
 - Java 17, Spring Boot
 - Spring Data JPA + MySQL 8 (en databas per tjänst)
 - Thymeleaf (frontend i booking-service)
+- JWT-autentisering (jjwt), lösenordshashning (Spring Security PasswordEncoder)
 - Docker & Docker Compose
+- Kubernetes (Deployment, Service, Secret)
 - Integrationstester: JUnit 5, MockMvc, H2 (in-memory), Mockito
 
 ---
