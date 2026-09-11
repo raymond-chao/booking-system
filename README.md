@@ -12,7 +12,7 @@ separata tjänster (Backend 2).
 ## Arkitektur
 
 ```
-                         ┌──────────────────────┐
+                          ┌──────────────────────┐
         HTTP (webbläsare) │                      │
    ─────────────────────► │   booking-service    │  :8080  (Thymeleaf-frontend + REST)
                           │   (rum & bokningar)  │
